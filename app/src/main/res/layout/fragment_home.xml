@@ -1,14 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".presentation.screens.HomeFragment">
 
-    <TextView
-        android:id="@+id/textview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Hello" />
+<!--    <TextView-->
+<!--        android:id="@+id/temperatureIndicatorTv"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:fontFamily="@font/weather_font"-->
+<!--        android:text="\uwi-wmo4680-77"-->
+<!--        android:textSize="80dp"-->
+<!--        android:textColor="@color/teal_200"-->
+<!--        android:gravity="center"-->
+<!--         />-->
 
-</FrameLayout>
+    <ImageView
+        android:id="@+id/weatherImage"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        tools:src="@drawable/wmo_0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="48dp"
+        android:contentDescription="@string/home_weather_image_description" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

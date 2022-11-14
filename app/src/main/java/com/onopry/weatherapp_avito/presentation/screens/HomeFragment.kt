@@ -25,9 +25,12 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentHomeBinding.bind(view)
 
-        binding.textview.text = "asdasasdasd"
+//        binding.textview.text = "asdasasdasd"
+//        binding.temperatureIndicatorTv.text = "\uf02e"
         checkAppPermissions()
     }
+
+
 
     private fun checkAppPermissions() {
         if (checkSelfPermission(

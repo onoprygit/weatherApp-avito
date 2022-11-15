@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">WeatherApp-Avito</string>
+    <string name="home_weather_image_description">Image of weather</string>
 </resources>

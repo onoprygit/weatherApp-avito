@@ -5,27 +5,25 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
-import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.checkSelfPermission
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.location.LocationServices
-import com.onopry.data.utils.debugLog
 import com.onopry.weatherapp_avito.R
 import com.onopry.weatherapp_avito.databinding.FragmentHomeBinding
-import com.onopry.weatherapp_avito.presentation.states.LocationState
+import com.onopry.weatherapp_avito.presentation.uistate.LocationState
 import com.onopry.weatherapp_avito.utils.shortToast
+import dagger.hilt.android.AndroidEntryPoint
 import kotlin.system.exitProcess
 
+@AndroidEntryPoint
 class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private lateinit var binding: FragmentHomeBinding
@@ -39,17 +37,18 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 //        binding.temperatureIndicatorTv.text = "\uf02e"
         checkAppPermissions()
 
-
+        lifecycleScope
 
     }
+
 
     @SuppressLint("MissingPermission")
     private fun getSystemLocation(){
         val locationManager = LocationServices.getFusedLocationProviderClient(requireContext())
-        viewModel.setLocation(LocationState.Pending)
+        viewModel.sendLocationState(LocationState.Pending)
         locationManager.lastLocation.addOnSuccessListener { location: Location? ->
             location?.let { locationNotNull ->
-                viewModel.setLocation(
+                viewModel.sendLocationState(
                     LocationState.Granted(
                         latitude = locationNotNull.latitude.toFloat(),
                         longitude = locationNotNull.longitude.toFloat(),
@@ -57,6 +56,8 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                     )
                 )
             }
+            viewModel.fetchForecast()
+
         }
     }
 

@@ -11,7 +11,7 @@ import com.onopry.domain.utils.ApiSuccess
 import kotlinx.coroutines.flow.flow
 
 class ForecastRepository(private val forecastDataSource: RemoteDataSource) : Repository {
-    override suspend fun getForecast(
+    override fun getForecast(
         lat: String,
         lon: String,
         startDate: String,

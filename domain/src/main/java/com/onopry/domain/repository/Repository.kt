@@ -5,7 +5,7 @@ import com.onopry.domain.utils.ApiResult
 import kotlinx.coroutines.flow.Flow
 
 interface Repository {
-    suspend fun getForecast(
+    fun getForecast(
         lat: String,
         lon: String,
         startDate: String,

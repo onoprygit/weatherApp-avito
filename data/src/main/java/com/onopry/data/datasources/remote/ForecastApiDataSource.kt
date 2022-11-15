@@ -4,7 +4,9 @@ import com.onopry.data.datasources.remote.api.ForecastApi
 import com.onopry.domain.utils.ApiError
 import com.onopry.domain.utils.ApiException
 import com.onopry.domain.utils.ApiSuccess
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import retrofit2.HttpException
 
 class ForecastApiDataSource(private val forecastApi: ForecastApi) : RemoteDataSource {
@@ -28,5 +30,5 @@ class ForecastApiDataSource(private val forecastApi: ForecastApi) : RemoteDataSo
         } catch (e: Exception){
             emit(ApiException(message = e.message.toString()))
         }
-    }
+    }.flowOn(Dispatchers.IO)
 }

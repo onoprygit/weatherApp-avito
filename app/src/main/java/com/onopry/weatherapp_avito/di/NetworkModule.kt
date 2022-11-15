@@ -12,37 +12,35 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import javax.inject.Singleton
 
+@Module
+@InstallIn(SingletonComponent::class)
 object NetworkModule {
-    @Module
-    @InstallIn(SingletonComponent::class)
-    object NetworkModule {
 
-        @Provides
-        @Singleton
-        fun provideOkHttpInterceptor() =
-            HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
+    @Provides
+    @Singleton
+    fun provideOkHttpInterceptor() =
+        HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
 
-        @Provides
-        @Singleton
-        fun provideOkHttpClient(loggingInterceptor: HttpLoggingInterceptor) = OkHttpClient.Builder()
-            .addInterceptor(loggingInterceptor)
-            .build()
+    @Provides
+    @Singleton
+    fun provideOkHttpClient(loggingInterceptor: HttpLoggingInterceptor) = OkHttpClient.Builder()
+        .addInterceptor(loggingInterceptor)
+        .build()
 
-        @Provides
-        @Singleton
-        fun provideMoshi(): Moshi = Moshi.Builder().build()
+    @Provides
+    @Singleton
+    fun provideMoshi(): Moshi = Moshi.Builder().build()
 
-        //Retrofit
-        @Provides
-        @Singleton
-        fun provideRetrofit(moshi: Moshi, client: OkHttpClient): Retrofit = Retrofit.Builder()
-            .baseUrl("https://api.open-meteo.com/v1/")
-            .client(client)
-            .addConverterFactory(MoshiConverterFactory.create(moshi))
-            .build()
+    //Retrofit
+    @Provides
+    @Singleton
+    fun provideRetrofit(moshi: Moshi, client: OkHttpClient): Retrofit = Retrofit.Builder()
+        .baseUrl("https://api.open-meteo.com/v1/")
+        .client(client)
+        .addConverterFactory(MoshiConverterFactory.create(moshi))
+        .build()
 
-        @Provides
-        @Singleton
-        fun provideApi(retrofit: Retrofit): ForecastApi = retrofit.create(ForecastApi::class.java)
-    }
+    @Provides
+    @Singleton
+    fun provideApi(retrofit: Retrofit): ForecastApi = retrofit.create(ForecastApi::class.java)
 }

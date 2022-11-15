@@ -1,4 +1,4 @@
-package com.onopry.weatherapp_avito.presentation.states
+package com.onopry.weatherapp_avito.presentation.uistate
 
 sealed class LocationState {
     object Empty: LocationState()

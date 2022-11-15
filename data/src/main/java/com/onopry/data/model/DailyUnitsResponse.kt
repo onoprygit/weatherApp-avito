@@ -1,5 +1,6 @@
 package com.onopry.data.model
 
+import com.onopry.domain.model.forecast.DailyUnits
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
@@ -24,4 +25,18 @@ data class DailyUnitsResponse(
     val weatherCode: String,
     @Json(name = "windspeed_10m_max")
     val windSpeedMax: String
+)
+
+fun DailyUnitsResponse.toDomainModel() = DailyUnits(
+    apparentTemperatureMax,
+    apparentTemperatureMin,
+    precipitationHours,
+    precipitationSum,
+    sunrise,
+    sunset,
+    temperatureMax,
+    temperatureMin,
+    time,
+    weatherCode,
+    windSpeedMax
 )

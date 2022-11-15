@@ -1,15 +1,14 @@
-package com.onopry.data.datasources.remote
+package com.onopry.domain.repository
 
-import com.onopry.data.model.ForecastResponse
+import com.onopry.domain.model.forecast.Forecast
 import com.onopry.domain.utils.ApiResult
 import kotlinx.coroutines.flow.Flow
 
-interface RemoteDataSource {
-
+interface Repository {
     suspend fun getForecast(
         lat: String,
         lon: String,
         startDate: String,
         endDate: String
-    ): Flow<ApiResult<ForecastResponse>>
+    ): Flow<ApiResult<Forecast>>
 }

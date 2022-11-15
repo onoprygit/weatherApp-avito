@@ -3,6 +3,7 @@ package com.onopry.data.model
 import com.onopry.domain.model.forecast.Hourly
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import kotlin.math.roundToInt
 
 @JsonClass(generateAdapter = true)
 data class HourlyResponse(
@@ -32,17 +33,17 @@ data class HourlyResponse(
 
 
 fun HourlyResponse.toDomainModel() = Hourly(
-    apparentTemperature,
-    freezingLevelHeight,
-    precipitation,
-    rain,
-    relativeHumidity,
-    showers,
-    snowfall,
-    temperature_2m,
-    time,
-    visibility,
-    weatherCode,
-    windDirection,
-    windSpeed
+    apparentTemperature = apparentTemperature.map { it.roundToInt() },
+    freezingLevelHeight = freezingLevelHeight.map { it.roundToInt() },
+    precipitation = precipitation,
+    rain = rain,
+    relativeHumidity = relativeHumidity,
+    showers = showers,
+    snowfall = snowfall,
+    temperature_2m = temperature_2m.map { it.roundToInt() },
+    time = time,
+    visibility = visibility.map { it.roundToInt() },
+    weatherCode = weatherCode,
+    windDirection = windDirection,
+    windSpeed = windSpeed.map { it.roundToInt() }
 )

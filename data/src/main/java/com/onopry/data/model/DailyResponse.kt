@@ -3,6 +3,7 @@ package com.onopry.data.model
 import com.onopry.domain.model.forecast.Daily
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import kotlin.math.roundToInt
 
 @JsonClass(generateAdapter = true)
 data class DailyResponse(
@@ -28,15 +29,34 @@ data class DailyResponse(
 )
 
 fun DailyResponse.toDomainModel() = Daily(
-    apparentTemperatureMax,
-    apparentTemperatureMin,
-    precipitationHours,
-    precipitationSum,
-    sunrise,
-    sunset,
-    temperatureMax,
-    temperatureMin,
-    time,
-    weatherCode,
-    windSpeedMax
+    apparentTemperatureMax = apparentTemperatureMax.map { it.roundToInt() },
+    apparentTemperatureMin = apparentTemperatureMin.map { it.roundToInt() },
+    precipitationHours = precipitationHours.map { it.roundToInt() },
+    precipitationSum = precipitationSum,
+    sunrise = sunrise,
+    sunset = sunset,
+    temperatureMax = temperatureMax.map { it.roundToInt() },
+    temperatureMin = temperatureMin.map { it.roundToInt() },
+    time = time,
+    weatherCode = weatherCode,
+    windSpeedMax = windSpeedMax.map { it.roundToInt() }
 )
+
+/*
+
+    apparentTemperature = apparentTemperature.map { it.roundToInt() },
+    freezingLevelHeight = freezingLevelHeight.map { it.roundToInt() },
+    precipitation = precipitation,
+    rain = rain,
+    relativeHumidity = relativeHumidity,
+    showers = showers,
+    snowfall = snowfall,
+    temperature_2m = temperature_2m.map { it.roundToInt() },
+    time = time,
+    visibility = visibility.map { it.roundToInt() },
+    weatherCode = weatherCode,
+    windDirection = windDirection,
+    windSpeed = windSpeed.map { it.roundToInt() }
+
+
+*/

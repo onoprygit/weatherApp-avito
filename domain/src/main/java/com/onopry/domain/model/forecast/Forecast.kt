@@ -4,7 +4,7 @@ data class Forecast(
     val currentWeather: CurrentWeather,
     val daily: Daily,
     val dailyUnits: DailyUnits,
-    val elevation: Double,
+    val elevation: Int,
     val generationTimeMs: Double,
     val hourly: Hourly,
     val hourlyUnits: HourlyUnits,

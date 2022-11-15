@@ -3,6 +3,7 @@ package com.onopry.data.model
 import com.onopry.domain.model.forecast.CurrentWeather
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import kotlin.math.roundToInt
 
 @JsonClass(generateAdapter = true)
 data class CurrentWeatherResponse(
@@ -17,5 +18,9 @@ data class CurrentWeatherResponse(
 )
 
 fun CurrentWeatherResponse.toDomainModel() = CurrentWeather(
-    temperature, time, weatherCode, windDirection, windSpeed
+    temperature = temperature.roundToInt(),
+    time = time,
+    weatherCode = weatherCode,
+    windDirection = windDirection.roundToInt(),
+    windSpeed = windSpeed.roundToInt()
 )

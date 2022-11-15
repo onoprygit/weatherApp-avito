@@ -14,13 +14,18 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat.checkSelfPermission
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.gms.location.LocationServices
 import com.onopry.weatherapp_avito.R
 import com.onopry.weatherapp_avito.databinding.FragmentHomeBinding
+import com.onopry.weatherapp_avito.presentation.uistate.ForecastState
 import com.onopry.weatherapp_avito.presentation.uistate.LocationState
+import com.onopry.weatherapp_avito.utils.setImageByWeatherCode
 import com.onopry.weatherapp_avito.utils.shortToast
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import kotlin.system.exitProcess
 
 @AndroidEntryPoint
@@ -33,17 +38,35 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentHomeBinding.bind(view)
 
-//        binding.textview.text = "asdasasdasd"
-//        binding.temperatureIndicatorTv.text = "\uf02e"
+        //        binding.textview.text = "asdasasdasd"
+        //        binding.temperatureIndicatorTv.text = "\uf02e"
         checkAppPermissions()
 
-        lifecycleScope
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.forecastStateFlow.collect { forecastState: ForecastState ->
+                    when (forecastState) {
+                        is ForecastState.Success -> {
+                            binding.weatherStateImage.setImageByWeatherCode(
+                                forecastState.data.currentWeather.weatherCode
+                            )
+                            binding.tempIndicatorTv.text =
+                                forecastState.data.currentWeather.temperature.toString()
 
+                            binding.windDirectionsVal.text =
+                                forecastState.data.currentWeather.windDirection.toString()
+
+                            binding.windSpeedVal.text =
+                                forecastState.data.currentWeather.windSpeed.toString()
+                        }
+                    }
+                }
+            }
+        }
     }
 
-
     @SuppressLint("MissingPermission")
-    private fun getSystemLocation(){
+    private fun getSystemLocation() {
         val locationManager = LocationServices.getFusedLocationProviderClient(requireContext())
         viewModel.sendLocationState(LocationState.Pending)
         locationManager.lastLocation.addOnSuccessListener { location: Location? ->
@@ -67,10 +90,10 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         if (checkSelfPermission(
                 requireContext(),
                 Manifest.permission.ACCESS_COARSE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED) {
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
             //todo добавить пасхалку если успею
             getSystemLocation()
-
         } else {
             requestPermissions(
                 arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION),
@@ -86,34 +109,40 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == COERCE_LOCATION_REQUEST_CODE) {
-            if(grantResults[0] == PackageManager.PERMISSION_GRANTED){
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 shortToast("Разрешенгие получено")
                 getSystemLocation()
-            }
-            else{
-                if (!shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_COARSE_LOCATION)){
+            } else {
+                if (!shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_COARSE_LOCATION)) {
                     askUserForOpeningAppSettings()
                 }
             }
         }
     }
 
-    private fun askUserForOpeningAppSettings(){
+    private fun askUserForOpeningAppSettings() {
         val appSettingIntent = Intent(
             Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
             Uri.fromParts("package", requireContext().packageName, null)
         )
 
-        if (requireContext().packageManager.resolveActivity(appSettingIntent, PackageManager.MATCH_DEFAULT_ONLY) == null) {
-            Toast.makeText(requireContext(), "Permission are denied forever", Toast.LENGTH_SHORT).show()
+        if (requireContext().packageManager.resolveActivity(
+                appSettingIntent,
+                PackageManager.MATCH_DEFAULT_ONLY
+            ) == null
+        ) {
+            Toast.makeText(requireContext(), "Permission are denied forever", Toast.LENGTH_SHORT)
+                .show()
         } else {
             AlertDialog.Builder(requireContext())
                 .setTitle("Разрешение отклонено")
-                .setMessage("""
+                .setMessage(
+                    """
                     Вы отколнили разрешение навсегда.
                     Вы можете изменить свое решение в настройках приложения.
                     Перейти в настройки?
-                """.trimIndent())
+                """.trimIndent()
+                )
                 .setPositiveButton("Перейти") { _, _ ->
                     startActivity(appSettingIntent)
                 }
@@ -126,7 +155,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         }
     }
 
-    companion object{
+    companion object {
         const val COERCE_LOCATION_REQUEST_CODE = 999
     }
 }

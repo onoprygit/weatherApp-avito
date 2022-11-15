@@ -3,6 +3,7 @@ package com.onopry.data.model
 import com.onopry.domain.model.forecast.Forecast
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import kotlin.math.roundToInt
 
 @JsonClass(generateAdapter = true)
 data class ForecastResponse(
@@ -30,7 +31,7 @@ fun ForecastResponse.toDomainModel() = Forecast(
     currentWeather = currentWeather.toDomainModel(),
     daily = daily.toDomainModel(),
     dailyUnits = dailyUnits.toDomainModel(),
-    elevation = elevation,
+    elevation = elevation.roundToInt(),
     generationTimeMs = generationTimeMs,
     hourly = hourly.toDomainModel(),
     hourlyUnits = hourlyUnits.toDomainModel(),

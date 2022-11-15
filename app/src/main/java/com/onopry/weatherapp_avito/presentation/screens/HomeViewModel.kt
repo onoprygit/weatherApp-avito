@@ -13,13 +13,10 @@ import com.onopry.weatherapp_avito.presentation.uistate.PermissionState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import java.security.Permission
 import javax.inject.Inject
-
 
 
 /*
@@ -40,13 +37,13 @@ class HomeViewModel @Inject constructor(
     private val locationMutableStateFlow = MutableStateFlow<LocationState>(LocationState.Empty)
     val locationStateFlow: StateFlow<LocationState> = locationMutableStateFlow
 
-    private val permissionMutableStateFlow = MutableStateFlow<PermissionState>(PermissionState.Empty)
+    private val permissionMutableStateFlow =
+        MutableStateFlow<PermissionState>(PermissionState.Empty)
     val permissionStateFlow: StateFlow<PermissionState> = permissionMutableStateFlow
 
 
-
     init {
-//        fetchForecast()
+        //        fetchForecast()
 
         forecastMutableStateFlow.onEach {
             debugLog("Forecast state is ${it.javaClass.simpleName}")
@@ -63,18 +60,30 @@ class HomeViewModel @Inject constructor(
             debugLog("")
             var latitude: Float
             var longitude: Float
-            if (state is LocationState.Granted){
+            if (state is LocationState.Granted) {
                 debugLog("forecast state is Granted")
                 forecastMutableStateFlow.emit(ForecastState.Loading)
-                getForecastUseCase(state.latitude.toString(), state.longitude.toString(), startDate, endDate)
+                getForecastUseCase(
+                    state.latitude.toString(),
+                    state.longitude.toString(),
+                    startDate,
+                    endDate
+                )
                     .collect { result ->
                         when (result) {
-                            is ApiSuccess -> ForecastState.Success(data = result.data)
-                            is ApiError -> ForecastState.Error(message = "Error: ${result.message} with code: ${result.code}")
-                            is ApiException -> ForecastState.Error(message = "Oops... An unexpected error occurred")
+                            is ApiSuccess -> forecastMutableStateFlow.emit(
+                                ForecastState.Success(data = result.data)
+                            )
+                            is ApiError -> forecastMutableStateFlow.emit(
+                                ForecastState.Error(message = "Error: ${result.message} with code: ${result.code}")
+                            )
+                            is ApiException -> forecastMutableStateFlow.emit(
+                                ForecastState.Error(
+                                    message = "Oops... An unexpected error occurred"
+                                )
+                            )
                         }
                     }
-
             }
         }
     }

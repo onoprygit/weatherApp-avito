@@ -3,6 +3,7 @@ package com.onopry.weatherapp_avito.di
 import com.onopry.data.datasources.remote.ForecastApiDataSource
 import com.onopry.data.datasources.remote.RemoteDataSource
 import com.onopry.data.datasources.remote.api.ForecastApi
+import com.onopry.data.datasources.remote.api.LocationApi
 import com.onopry.data.repository.ForecastRepository
 import com.onopry.domain.repository.Repository
 import dagger.Module
@@ -17,7 +18,11 @@ object DataModule {
 
     @Singleton
     @Provides
-    fun provideRemoteDataSource(api: ForecastApi): RemoteDataSource = ForecastApiDataSource(forecastApi = api)
+    fun provideRemoteDataSource(
+        forecastApi: ForecastApi,
+        locationApi: LocationApi
+    ): RemoteDataSource =
+        ForecastApiDataSource(forecastApi = forecastApi, locationApi = locationApi)
 
     @Singleton
     @Provides

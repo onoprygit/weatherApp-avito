@@ -5,6 +5,8 @@ import com.onopry.data.datasources.remote.forecast.ForecastRemoteDataSource
 import com.onopry.data.datasources.remote.iplocation.IpLocationRemoteDataSource
 import com.onopry.data.datasources.remote.location.BaseLocationRemoteDataSource
 import com.onopry.data.model.toDomainModel
+import com.onopry.data.model.toMy
+import com.onopry.data.utils.debugLog
 import com.onopry.domain.repository.Repository
 import com.onopry.domain.utils.ApiError
 import com.onopry.domain.utils.ApiException
@@ -28,7 +30,6 @@ class ForecastRepository(
     ) = flow {
         try {
             val forecastResponse = forecastSource.getForecast(lat, lon, startDate, endDate)
-
             val body = forecastResponse.body()
 
             if (forecastResponse.isSuccessful && body != null) {

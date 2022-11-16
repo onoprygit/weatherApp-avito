@@ -3,6 +3,8 @@ package com.onopry.data.model
 import com.onopry.domain.model.forecast.Hourly
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import java.time.LocalDate
+import java.time.LocalDateTime
 import kotlin.math.roundToInt
 
 @JsonClass(generateAdapter = true)
@@ -32,6 +34,33 @@ data class HourlyResponse(
 )
 
 
+
+fun HourlyResponse.toDomainModel(dayDate: String): List<Hourly> {
+    val rootDate = LocalDate.parse(dayDate)
+    return time.mapIndexed { index, time ->
+        Hourly(
+            temperature = temperature_2m[index].roundToInt(),
+            time = time,
+            weatherCode = weatherCode[index],
+            apparentTemperature = apparentTemperature[index],
+            freezingLevelHeight = freezingLevelHeight[index],
+            precipitation = precipitation[index],
+            rain = rain[index],
+            relativeHumidity = relativeHumidity[index],
+            showers = showers[index],
+            snowfall = snowfall[index],
+            visibility = visibility[index],
+            windDirection = windDirection[index],
+            windSpeed = windSpeed[index]
+        )
+    }.filter {
+        val hourlyDate = LocalDateTime.parse(it.time)
+        rootDate.year == hourlyDate.year && rootDate.dayOfYear == hourlyDate.dayOfYear
+    }
+}
+
+
+/*
 fun HourlyResponse.toDomainModel() = Hourly(
     apparentTemperature = apparentTemperature.map { it.roundToInt() },
     freezingLevelHeight = freezingLevelHeight.map { it.roundToInt() },
@@ -46,4 +75,4 @@ fun HourlyResponse.toDomainModel() = Hourly(
     weatherCode = weatherCode,
     windDirection = windDirection,
     windSpeed = windSpeed.map { it.roundToInt() }
-)
+)*/

@@ -28,7 +28,6 @@ import com.onopry.weatherapp_avito.utils.setImageByWeatherCode
 import com.onopry.weatherapp_avito.utils.shortToast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import kotlin.system.exitProcess
 
 @AndroidEntryPoint
 class HomeFragment : Fragment(R.layout.fragment_home) {
@@ -102,6 +101,8 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
             windSpeedVal.text =
                 forecastState.data.currentWeather.windSpeed.toString()
+
+
         }
     }
 

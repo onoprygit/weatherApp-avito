@@ -1,6 +1,6 @@
 package com.onopry.weatherapp_avito.di
 
-import com.onopry.data.datasources.remote.api.ForecastApi
+import com.onopry.data.datasources.remote.forecast.ForecastApi
 import com.squareup.moshi.Moshi
 import dagger.Module
 import dagger.Provides

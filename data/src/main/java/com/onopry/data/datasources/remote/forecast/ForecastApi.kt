@@ -1,4 +1,4 @@
-package com.onopry.data.datasources.remote.api
+package com.onopry.data.datasources.remote.forecast
 
 import com.onopry.data.model.ForecastResponse
 import retrofit2.Response

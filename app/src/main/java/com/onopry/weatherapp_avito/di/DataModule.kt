@@ -1,9 +1,14 @@
 package com.onopry.weatherapp_avito.di
 
-import com.onopry.data.datasources.remote.ForecastApiDataSource
-import com.onopry.data.datasources.remote.RemoteDataSource
-import com.onopry.data.datasources.remote.api.ForecastApi
-import com.onopry.data.datasources.remote.api.LocationApi
+import com.onopry.data.datasources.remote.forecast.ForecastApiDataSource
+import com.onopry.data.datasources.remote.forecast.ForecastRemoteDataSource
+import com.onopry.data.datasources.remote.forecast.ForecastApi
+import com.onopry.data.datasources.remote.iplocation.IpGeolocationApi
+import com.onopry.data.datasources.remote.iplocation.IpLocationRemoteDataSource
+import com.onopry.data.datasources.remote.iplocation.IpLocationRemoteDataSourceImpl
+import com.onopry.data.datasources.remote.location.BaseLocationRemoteDataSource
+import com.onopry.data.datasources.remote.location.BaseLocationRemoteDataSourceImpl
+import com.onopry.data.datasources.remote.location.LocationApi
 import com.onopry.data.repository.ForecastRepository
 import com.onopry.domain.repository.Repository
 import dagger.Module
@@ -18,16 +23,37 @@ object DataModule {
 
     @Singleton
     @Provides
-    fun provideRemoteDataSource(
-        forecastApi: ForecastApi,
-        locationApi: LocationApi
-    ): RemoteDataSource =
-        ForecastApiDataSource(forecastApi = forecastApi, locationApi = locationApi)
+    fun provideForecastRemoteDataSource(
+        forecastApi: ForecastApi
+    ): ForecastRemoteDataSource =
+        ForecastApiDataSource(forecastApi = forecastApi)
+
+    @Singleton
+    @Provides
+    fun provideBaseLocationRemoteDataSource(
+        baseLocationApi: LocationApi
+    ): BaseLocationRemoteDataSource = BaseLocationRemoteDataSourceImpl(
+        api = baseLocationApi
+    )
+
+    @Singleton
+    @Provides
+    fun provideIpLocationRemoteDataSource(
+        locationApi: IpGeolocationApi
+    ): IpLocationRemoteDataSource = IpLocationRemoteDataSourceImpl(
+        api = locationApi
+    )
 
     @Singleton
     @Provides
     fun provideForecastRepository(
-        remoteDataSource: RemoteDataSource,
+        forecastRemoteDataSource: ForecastRemoteDataSource,
+        baseLocationSource: BaseLocationRemoteDataSource,
+        ipLocationSource: IpLocationRemoteDataSource
     ): Repository =
-        ForecastRepository(forecastDataSource = remoteDataSource)
+        ForecastRepository(
+            forecastSource = forecastRemoteDataSource,
+            baseLocationSource = baseLocationSource,
+            ipLocationSource = ipLocationSource
+        )
 }

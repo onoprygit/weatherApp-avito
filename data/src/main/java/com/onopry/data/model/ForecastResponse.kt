@@ -35,5 +35,5 @@ fun ForecastResponse.toDomainModel() = Forecast(
     generationTimeMs = generationTimeMs,
     hourly = hourly.toDomainModel(),
     hourlyUnits = hourlyUnits.toDomainModel(),
-    latitude, longitude, timezone, timezoneAbbreviation, utcOffsetSeconds
+    latitude, longitude, timezone, timezoneAbbreviation, utcOffsetSeconds,
 )

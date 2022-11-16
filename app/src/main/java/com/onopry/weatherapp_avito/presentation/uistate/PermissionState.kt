@@ -4,6 +4,6 @@ sealed class PermissionState {
     object Empty: PermissionState()
     object Required: PermissionState()
     object Pending : PermissionState()
-    object Granted : PermissionState()
     object Denied : PermissionState()
+    object Granted : PermissionState()
 }

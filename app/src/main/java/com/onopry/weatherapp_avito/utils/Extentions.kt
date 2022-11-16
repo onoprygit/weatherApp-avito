@@ -43,6 +43,8 @@ inline fun View.showIfConditionOrGone(condition: () -> Boolean) = apply {
     visibility = if (condition() && visibility != View.VISIBLE) View.VISIBLE else View.GONE
 }
 
+fun Any?.isNotNull() = this != null
+
 fun ImageView.setImageByWeatherCode(code: Int){
     when(code){
         0 -> setImageResource(R.drawable.wmo_0)

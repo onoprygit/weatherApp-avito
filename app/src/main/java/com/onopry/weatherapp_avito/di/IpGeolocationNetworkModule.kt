@@ -1,7 +1,6 @@
 package com.onopry.weatherapp_avito.di
 
-import com.onopry.data.datasources.remote.api.IpGeolocationApi
-import com.onopry.data.datasources.remote.api.LocationApi
+import com.onopry.data.datasources.remote.iplocation.IpGeolocationApi
 import com.onopry.weatherapp_avito.utils.ApiKeys
 import com.onopry.weatherapp_avito.utils.addQueryParam
 import com.squareup.moshi.Moshi

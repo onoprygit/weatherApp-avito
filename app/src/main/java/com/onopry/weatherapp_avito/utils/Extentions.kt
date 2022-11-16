@@ -5,6 +5,21 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.onopry.weatherapp_avito.R
+import okhttp3.OkHttpClient
+
+fun OkHttpClient.Builder.addQueryParam(
+    name: String,
+    key: String,
+): OkHttpClient.Builder = this.addInterceptor { chain ->
+    val request = chain.request()
+    val url = request
+        .url
+        .newBuilder()
+        .addQueryParameter(name, key)
+        .build()
+    val newRequest = request.newBuilder().url(url).build()
+    chain.proceed(newRequest)
+}
 
 fun Fragment.shortToast(message: String){
     Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
@@ -27,6 +42,8 @@ inline fun View.showIfConditionOrHide(condition: () -> Boolean) = apply {
 inline fun View.showIfConditionOrGone(condition: () -> Boolean) = apply {
     visibility = if (condition() && visibility != View.VISIBLE) View.VISIBLE else View.GONE
 }
+
+fun Any?.isNotNull() = this != null
 
 fun ImageView.setImageByWeatherCode(code: Int){
     when(code){

@@ -28,7 +28,28 @@ data class DailyResponse(
     val windSpeedMax: List<Double>
 )
 
-fun DailyResponse.toDomainModel() = Daily(
+fun DailyResponse.toDomainModel(hourly: HourlyResponse): List<Daily> {
+    return time.mapIndexed { index, dailyTime ->
+        Daily(
+            apparentTemperatureMax = apparentTemperatureMax[index].roundToInt(),
+            apparentTemperatureMin = apparentTemperatureMin[index].roundToInt(),
+            precipitationHours = precipitationHours[index].roundToInt(),
+            precipitationSum = precipitationSum[index].roundToInt(),
+            sunrise = sunrise[index],
+            sunset = sunset[index],
+            temperatureMax = temperatureMax[index].roundToInt(),
+            temperatureMin = temperatureMin[index].roundToInt(),
+            time = dailyTime,
+            weatherCode = weatherCode[index],
+            windSpeedMax = windSpeedMax[index].roundToInt(),
+            hourlyWeather = hourly.toMy(dailyTime)
+        )
+    }
+}
+
+
+
+/*() = Daily(
     apparentTemperatureMax = apparentTemperatureMax.map { it.roundToInt() },
     apparentTemperatureMin = apparentTemperatureMin.map { it.roundToInt() },
     precipitationHours = precipitationHours.map { it.roundToInt() },
@@ -40,7 +61,7 @@ fun DailyResponse.toDomainModel() = Daily(
     time = time,
     weatherCode = weatherCode,
     windSpeedMax = windSpeedMax.map { it.roundToInt() }
-)
+)*/
 
 /*
 

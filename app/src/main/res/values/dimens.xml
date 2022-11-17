@@ -3,4 +3,5 @@
     <dimen name="current_temperature_indicator_size">25sp</dimen>
     <dimen name="item_forecast_base_horizontal_offset">20dp</dimen>
     <dimen name="item_forecast_base_vertical_offset">16dp</dimen>
+    <dimen name="text_margin">16dp</dimen>
 </resources>

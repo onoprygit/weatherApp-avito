@@ -1,6 +1,8 @@
 package com.onopry.data.model
 
 import com.onopry.domain.model.forecast.Daily
+import com.onopry.domain.model.forecast.DailyUnits
+import com.onopry.domain.model.forecast.HourlyUnits
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import kotlin.math.roundToInt
@@ -23,26 +25,26 @@ data class DailyResponse(
     val temperatureMin: List<Double>,
     val time: List<String>,
     @Json(name = "weathercode")
-    val weatherCode: List<Int>,
+    val weatherCode: List<Int?>,
     @Json(name = "windspeed_10m_max")
     val windSpeedMax: List<Double>
 )
 
-fun DailyResponse.toDomainModel(hourly: HourlyResponse): List<Daily> {
+fun DailyResponse.toDomainModel(hourly: HourlyResponse, units: DailyUnitsResponse, hourlyUnits: HourlyUnitsResponse): List<Daily> {
     return time.mapIndexed { index, dailyTime ->
         Daily(
-            apparentTemperatureMax = apparentTemperatureMax[index].roundToInt(),
-            apparentTemperatureMin = apparentTemperatureMin[index].roundToInt(),
-            precipitationHours = precipitationHours[index].roundToInt(),
-            precipitationSum = precipitationSum[index].roundToInt(),
+            apparentTemperatureMax = apparentTemperatureMax[index].roundToInt().toString() + units.apparentTemperatureMax,
+            apparentTemperatureMin = apparentTemperatureMin[index].roundToInt().toString() + units.apparentTemperatureMax,
+            precipitationHours = precipitationHours[index].roundToInt().toString() + " " + units.precipitationHours,
+            precipitationSum = precipitationSum[index].roundToInt().toString() + " " + units.precipitationSum,
             sunrise = sunrise[index],
             sunset = sunset[index],
-            temperatureMax = temperatureMax[index].roundToInt(),
-            temperatureMin = temperatureMin[index].roundToInt(),
+            temperatureMax = temperatureMax[index].roundToInt().toString() + units.apparentTemperatureMax,
+            temperatureMin = temperatureMin[index].roundToInt().toString() + units.apparentTemperatureMax,
             time = dailyTime,
-            weatherCode = weatherCode[index],
-            windSpeedMax = windSpeedMax[index].roundToInt(),
-            hourlyWeather = hourly.toMy(dailyTime)
+            weatherCode = weatherCode[index] ?: 0,
+            windSpeedMax = windSpeedMax[index].roundToInt().toString() + " " + units.windSpeedMax,
+            hourlyWeather = hourly.toDomainModel(dailyTime, hourlyUnits)
         )
     }
 }

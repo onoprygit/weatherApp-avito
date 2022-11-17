@@ -30,14 +30,6 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import kotlin.coroutines.coroutineContext
 
-
-/*
-* Возможные объекты и сосотяния:
-* Состояние экрана
-* Состояние прогноза
-* Состояние локации
-*
-* */
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val getForecastUseCase: GetForecastUseCase,
@@ -46,9 +38,6 @@ class HomeViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val forecastPeriod = ForecastPeriod()
-
-    //    private val currentLocalityMutableFlow = MutableStateFlow<Locality?>(null)
-    //    val currentLocalityStateFlow: StateFlow<Locality?> = currentLocalityMutableFlow
 
     private val screenStateMutableFlow = MutableStateFlow<ScreenState>(ScreenState.Empty)
     val screenState: StateFlow<ScreenState> = screenStateMutableFlow
@@ -68,9 +57,14 @@ class HomeViewModel @Inject constructor(
         localityMutableStateFlow.onEach { localityState ->
             debugLog("Locality state is [${localityState.javaClass.simpleName}]")
             when (localityState) {
-                is LocalityState.City ->
-//                    fetchForecast()
-                    fetchForecastOnly(localityState)
+                is LocalityState.City -> {
+                    if (localityState.locality.name != null){
+                        fetchForecastOnly(localityState)
+                    } else {
+                        fetchForecastWithLocalityName(localityState)
+                    }
+                }
+
                 is LocalityState.None -> fetchIpLocality()
             }
         }.launchIn(viewModelScope)
@@ -242,31 +236,6 @@ class HomeViewModel @Inject constructor(
     private suspend fun fetchForecastWithLocalityName(localityState: LocalityState.City) {
         fetchBaseLocality()
         fetchForecastOnly(localityState)
-//        val localityResult = withContext(coroutineContext){
-//            fetchBaseLocality()
-//        }
-//        val forecastResult = withContext(coroutineContext){
-//            fetchForecastOnly(localityState)
-//        }
-
-//        val localityFlow = getLocationNameUseCase(
-//            lat = localityState.locality.lat,
-//            lon = localityState.locality.lon,
-//        )
-//        localityFlow.zip(forecastFlow) { t1, t2 -> t1 to t2 }
-//            .onEach { (locality, forecast) ->
-//                when {
-//                    locality is ApiSuccess && forecast is ApiSuccess -> {
-//                        localityMutableStateFlow.emit(
-//                            LocalityState.City(
-//                                locality = locality.data,
-//                                isIpLocality = false
-//                            )
-//                        )
-//                        forecastMutableStateFlow.emit(ForecastState.Success(data = forecast.data))
-//                    }
-//                }
-//            }
     }
 
     private suspend fun fetchForecastOnly(localityState: LocalityState.City) {

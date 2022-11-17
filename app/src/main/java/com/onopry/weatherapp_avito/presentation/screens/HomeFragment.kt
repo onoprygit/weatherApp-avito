@@ -11,19 +11,28 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts.RequestPermission
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.location.LocationServices
 import com.onopry.data.utils.debugLog
 import com.onopry.domain.model.forecast.Locality
 import com.onopry.weatherapp_avito.R
 import com.onopry.weatherapp_avito.databinding.FragmentHomeBinding
+import com.onopry.weatherapp_avito.presentation.adapters.DailyForecastAdapter
+import com.onopry.weatherapp_avito.presentation.adapters.DailyListDecoration
+import com.onopry.weatherapp_avito.presentation.adapters.HourlyForecastAdapter
+import com.onopry.weatherapp_avito.presentation.adapters.HourlyListDecoration
 import com.onopry.weatherapp_avito.presentation.uistate.ForecastState
 import com.onopry.weatherapp_avito.presentation.uistate.LocalityState
 import com.onopry.weatherapp_avito.presentation.uistate.PermissionState
+import com.onopry.weatherapp_avito.utils.DailyToUiConverter
 import com.onopry.weatherapp_avito.utils.setImageByWeatherCode
 import com.onopry.weatherapp_avito.utils.shortToast
 import dagger.hilt.android.AndroidEntryPoint
@@ -33,7 +42,11 @@ import kotlinx.coroutines.launch
 class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private lateinit var binding: FragmentHomeBinding
-    private val viewModel: HomeViewModel by viewModels()
+    private val viewModel: HomeViewModel by activityViewModels()
+
+    private lateinit var dividerDailyList: DividerItemDecoration
+    private val dailyListDecoration = DailyListDecoration()
+    private val hourlyListDecoration = HourlyListDecoration()
 
     private val geoLocationPermissionLauncher =
         registerForActivityResult(RequestPermission(), ::onGrantedGeoPermissionResult)
@@ -45,14 +58,29 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         debugLog("Checking permission")
         geoLocationPermissionLauncher.launch(Manifest.permission.ACCESS_COARSE_LOCATION)
 
+        dividerDailyList = DividerItemDecoration(requireContext(), RecyclerView.VERTICAL)
+        ResourcesCompat.getDrawable(resources, R.drawable.devider, null)?.let {
+            dividerDailyList.setDrawable(it)
+        }
+
+
+//        activityMainBinding.search.setActivated(true);
+//        activityMainBinding.search.setQueryHint("Type your keyword here");
+//        activityMainBinding.search.onActionViewExpanded();
+//        activityMainBinding.search.setIconified(false);
+//        activityMainBinding.search.clearFocus();
+
         observeViewModelStates()
+
+
+
         handleErrorStates()
     }
 
     private fun handleErrorStates() {
     }
 
-    private fun observeViewModelStates(){
+    private fun observeViewModelStates() {
         observeForecastState()
         observeLocalityState()
     }
@@ -63,7 +91,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 viewModel.forecastState.collect { forecastState: ForecastState ->
                     when (forecastState) {
                         is ForecastState.Success -> {
-                            bindCurrForecastData(forecastState)
+                            bindCurrentForecastData(forecastState)
                         }
                         //                        ForecastState.Empty -> TODO()
                         //                        is ForecastState.Error -> TODO()
@@ -80,7 +108,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 viewModel.localityState.collect { localityState ->
                     when (localityState) {
                         is LocalityState.City -> {
-                            debugLog(localityState.locality.name.toString() + "is IP: "+ localityState.isIpLocality.toString())
+                            debugLog(localityState.locality.name.toString() + "is IP: " + localityState.isIpLocality.toString())
                         }
                     }
                 }
@@ -88,21 +116,31 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         }
     }
 
-    private fun bindCurrForecastData(forecastState: ForecastState.Success) {
+    private fun bindCurrentForecastData(forecastState: ForecastState.Success) {
         with(binding) {
+            val units = forecastState.data.hourlyUnits
+            val currentWeather = forecastState.data.currentWeather
             weatherStateImage
-                .setImageByWeatherCode(forecastState.data.currentWeather.weatherCode)
+                .setImageByWeatherCode(currentWeather.weatherCode)
 
-            tempIndicatorTv.text =
-                forecastState.data.currentWeather.temperature.toString()
-
-            windDirectionsVal.text =
-                forecastState.data.currentWeather.windDirection.toString()
-
-            windSpeedVal.text =
-                forecastState.data.currentWeather.windSpeed.toString()
+            tempIndicatorTv.text = currentWeather.temperature
+            windDirectionsVal.text = currentWeather.windDirection
+            windSpeedVal.text = currentWeather.windSpeed
 
 
+            val hourlyForecastAdapter = HourlyForecastAdapter()
+            hourlyForecastAdapter.updateHourlyForecastData(forecastState.data.dailyWeather[0].hourlyWeather)
+            currentWeatherRecycler.adapter = hourlyForecastAdapter
+            currentWeatherRecycler.addItemDecoration(hourlyListDecoration)
+
+
+            val dailyForecastAdapter = DailyForecastAdapter()
+            dailyForecastAdapter.updateDailyForecastData(DailyToUiConverter.convert(forecastState.data.dailyWeather))
+            weeklyForecastRecycler.adapter = dailyForecastAdapter
+            weeklyForecastRecycler.apply {
+                addItemDecoration(dividerDailyList)
+                addItemDecoration(dailyListDecoration)
+            }
         }
     }
 
@@ -163,8 +201,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 .show()
         } else {
             viewModel.sendPermissionState(PermissionState.Denied)
-            shortToast("Geo permission is denied now")
-//            showPermissionDeniedDialog(appSettingIntent)
+            showPermissionDeniedDialog(appSettingIntent)
         }
     }
 

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="wmo_0">Clear sky</string>
+    <string name="wmo_1">Mainly clear</string>
+    <string name="wmo_2">Partly cloudy</string>
+    <string name="wmo_3">Overcast</string>
+    <string name="wmo_45">Fog</string>
+    <string name="wmo_48">Depositing rime fog</string>
+    <string name="wmo_51">Drizzle: light</string>
+    <string name="wmo_53">Drizzle: moderate</string>
+    <string name="wmo_55">Drizzle: dense intensity</string>
+    <string name="wmo_56">Freezing Drizzle: light</string>
+    <string name="wmo_57">Freezing Drizzle: dense intensity</string>
+    <string name="wmo_61">Rain: Slight</string>
+    <string name="wmo_63">Rain: moderate </string>
+    <string name="wmo_65">Rain: heavy intensity</string>
+    <string name="wmo_66">Freezing Rain: Light</string>
+    <string name="wmo_67">Freezing Rain: heavy intensity</string>
+    <string name="wmo_71">Snow fall: Slight</string>
+    <string name="wmo_73">Snow fall: moderate</string>
+    <string name="wmo_75">Snow fall: heavy intensity</string>
+    <string name="wmo_77">Snow grains</string>
+    <string name="wmo_80">Rain showers: Slight</string>
+    <string name="wmo_81">Rain showers: moderate</string>
+    <string name="wmo_82">Rain showers: violent</string>
+    <string name="wmo_85">Snow showers slight</string>
+    <string name="wmo_86">Snow showers heavy</string>
+    <string name="wmo_95">Thunderstorm: Slight</string>
+    <string name="wmo_96">Thunderstorm with slight</string>
+    <string name="wmo_99">Thunderstorm with heavy hail</string>
+
+</resources>

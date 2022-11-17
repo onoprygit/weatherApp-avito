@@ -15,4 +15,5 @@ interface Repository {
 
     fun getLocationName(lat: String, lon: String): Flow<ApiResult<Locality>>
     fun getLocationByIp(): Flow<ApiResult<Locality>>
+    fun searchCities(query: String): Any
 }

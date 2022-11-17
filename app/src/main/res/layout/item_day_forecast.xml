@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         >
@@ -14,19 +14,18 @@
             android:id="@+id/fixedPart"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_alignParentTop="true"
             >
             <TextView
-                android:id="@+id/date"
+                android:id="@+id/forecastDateTv"
                 style="@style/ForecastItemAccentFont"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintBottom_toTopOf="@id/textWeatherDescription"
+                android:textSize="12sp"
                 android:layout_marginStart="@dimen/item_forecast_base_horizontal_offset"
+                android:layout_marginTop="@dimen/item_forecast_base_vertical_offset"
                 tools:text="Sunday, 16 Nov"
                 />
 
@@ -35,8 +34,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/forecastDateTv"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/date"
+                android:layout_marginTop="@dimen/item_forecast_base_vertical_offset"
+                android:layout_marginBottom="@dimen/item_forecast_base_vertical_offset"
                 android:layout_marginStart="@dimen/item_forecast_base_horizontal_offset"
                 tools:text="@string/wmo_99"
                 style="@style/ForecastItemDefaultFont"
@@ -92,10 +93,10 @@
             android:id="@+id/expandablePart"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/fixedPart"
-            android:layout_marginTop="@dimen/item_forecast_base_vertical_offset"
+            android:layout_below="@id/fixedPart"
+
+            android:visibility="gone"
+            tools:visibility="visible"
             >
             <LinearLayout
                 android:id="@+id/windRow"
@@ -115,7 +116,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     android:layout_marginStart="@dimen/item_forecast_base_horizontal_offset"
                     style="@style/ForecastItemDefaultFont"
-                    tools:text="Wind:"
+                    android:text="Wind:"
                     android:layout_weight="1"
                     />
                 <TextView
@@ -146,7 +147,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     android:layout_marginStart="@dimen/item_forecast_base_horizontal_offset"
                     style="@style/ForecastItemDefaultFont"
-                    tools:text="Wind:"
+                    android:text="Precipitation:"
                     android:layout_weight="1"
                     />
                 <TextView
@@ -176,7 +177,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     android:layout_marginStart="@dimen/item_forecast_base_horizontal_offset"
                     style="@style/ForecastItemDefaultFont"
-                    tools:text="Восход/заход:"
+                    android:text="Sunrise/sunset:"
                     android:layout_weight="1"
                     />
                 <TextView
@@ -197,7 +198,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginTop="8dp"
-                android:layout_marginStart="@dimen/item_forecast_base_horizontal_offset"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 android:orientation="horizontal"
                 tools:listitem="@layout/item_hourly_forecast_list"
@@ -206,6 +206,6 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </RelativeLayout>
 
 </androidx.cardview.widget.CardView>

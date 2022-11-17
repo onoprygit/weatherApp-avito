@@ -59,20 +59,20 @@ fun HourlyUnitsResponse.toMy() = HourlyUnits(
 )
 */
 
-fun CurrentWeatherResponse.toMy() = CurrentWeather(
+/*fun CurrentWeatherResponse.toMy() = CurrentWeather(
     temperature, time, weatherCode, windDirection, windSpeed
-)
+)*/
 
 fun ForecastResponse.toDomainModel() = Forecast(
-    currentWeather = currentWeather.toDomainModel(),
+    currentWeather = currentWeather.toDomainModel(hourlyUnits),
     dailyUnits = dailyUnits.toDomainModel(),
     hourlyUnits = hourlyUnits.toDomainModel(),
     latitude = latitude,
     longitude = longitude,
     timezone = timezone,
-    dailyWeather = daily.toDomainModel(hourly)
+    dailyWeather = daily.toDomainModel(hourly, dailyUnits, hourlyUnits)
 )
-
+/*
 fun DailyResponse.toMy(hourly: HourlyResponse): List<Daily> {
     return time.mapIndexed { index, dailyTime ->
         Daily(
@@ -114,6 +114,6 @@ fun HourlyResponse.toMy(dayDate: String): List<Hourly> {
         val hourlyDate = LocalDateTime.parse(it.time)
         rootDate.year == hourlyDate.year && rootDate.dayOfYear == hourlyDate.dayOfYear
     }
-}
+}*/
 
 

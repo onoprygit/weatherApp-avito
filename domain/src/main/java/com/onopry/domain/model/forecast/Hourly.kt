@@ -19,20 +19,19 @@ data class Hourly(
 */
 
 data class Hourly(
-    val temperature: Int,
+    val temperature: String,
     val time: String,
     val weatherCode: Int,
-
-    val apparentTemperature: Double,
-    val freezingLevelHeight: Double,
-    val precipitation: Double,
-    val rain: Double,
-    val relativeHumidity: Int,
-    val showers: Double,
-    val snowfall: Double,
-    val visibility: Double,
-    val windDirection: Int,
-    val windSpeed: Double
+    val apparentTemperature: String,
+    val freezingLevelHeight: String,
+    val precipitation: String,
+    val rain: String,
+    val relativeHumidity: String,
+    val showers: String,
+    val snowfall: String,
+    val visibility: String,
+    val windDirection: String,
+    val windSpeed: String
 )
 
 

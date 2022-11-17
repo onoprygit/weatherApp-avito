@@ -53,6 +53,7 @@ dependencies {
 
     // Location
     implementation 'com.google.android.gms:play-services-location:21.0.1'
+    implementation 'androidx.recyclerview:recyclerview:1.2.1'
 
     // Navigation
     def nav_version = "2.5.3"

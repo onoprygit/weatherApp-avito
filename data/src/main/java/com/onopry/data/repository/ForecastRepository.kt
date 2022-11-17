@@ -4,9 +4,8 @@ import android.util.Log
 import com.onopry.data.datasources.remote.forecast.ForecastRemoteDataSource
 import com.onopry.data.datasources.remote.iplocation.IpLocationRemoteDataSource
 import com.onopry.data.datasources.remote.location.BaseLocationRemoteDataSource
+import com.onopry.data.model.toDomain
 import com.onopry.data.model.toDomainModel
-import com.onopry.data.model.toMy
-import com.onopry.data.utils.debugLog
 import com.onopry.domain.repository.Repository
 import com.onopry.domain.utils.ApiError
 import com.onopry.domain.utils.ApiException
@@ -38,27 +37,29 @@ class ForecastRepository(
                 emit(ApiError(code = forecastResponse.code(), message = forecastResponse.message()))
             }
         } catch (e: HttpException) {
-            emit(ApiError(code = e.code(), e.message()))
+            //            emit(ApiError(code = e.code(), e.message()))
+            throw e
         } catch (e: Exception) {
-            emit(ApiException(message = e.message.toString()))
+            //            emit(ApiException(message = e.message.toString()))
+            throw e
         }
     }.flowOn(Dispatchers.IO)
 
     override fun getLocationName(lat: String, lon: String) = flow {
         try {
-            val locationResponce = baseLocationSource.identifyLocality(lat, lon)
+            val locationResponse = baseLocationSource.identifyLocality(lat, lon)
 
-            val body = locationResponce.body()?.get(0)
+            val body = locationResponse.body()?.get(0)
 
-            if (locationResponce.isSuccessful && body != null) {
+            if (locationResponse.isSuccessful && body != null) {
                 emit(ApiSuccess(data = body.toDomainModel()))
             } else {
-                emit(ApiError(code = locationResponce.code(), message = locationResponce.message()))
+                emit(ApiError(code = locationResponse.code(), message = locationResponse.message()))
             }
         } catch (e: HttpException) {
             emit(ApiError(code = e.code(), e.message()))
         } catch (e: Exception) {
-            Log.e("DEV_", "getLocationName: ${e.message}", )
+            Log.e("DEV_", "getLocationName: ${e.message}")
             emit(ApiException(message = e.stackTrace.toString()))
         }
     }.flowOn(Dispatchers.IO)
@@ -76,6 +77,30 @@ class ForecastRepository(
                     ApiError(
                         code = ipLocationResponse.code(),
                         message = ipLocationResponse.message()
+                    )
+                )
+            }
+        } catch (e: HttpException) {
+            emit(ApiError(code = e.code(), e.message()))
+        } catch (e: Exception) {
+            emit(ApiException(message = e.message.toString()))
+        }
+    }.flowOn(Dispatchers.IO)
+
+    override fun searchCities(
+        query: String,
+    ) = flow {
+        val result = baseLocationSource.searchCities(query)
+        val body = result.body()
+
+        try {
+            if (result.isSuccessful && body != null) {
+                emit(ApiSuccess(data = body.toDomain()))
+            } else {
+                emit(
+                    ApiError(
+                        code = result.code(),
+                        message = result.message()
                     )
                 )
             }

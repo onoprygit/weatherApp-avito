@@ -7,107 +7,208 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".presentation.screens.HomeFragment">
 
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/startGuideline"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_begin="20dp"
-            />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/endGuideline"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_end="20dp"
-            />
-
-        <ImageView
-            android:id="@+id/weatherStateImage"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            app:layout_constraintStart_toStartOf="@id/startGuideline"
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:contentDescription="@string/home_weather_image_description"
-            android:src="@drawable/wmo_0" />
+            app:layout_constraintBottom_toBottomOf="parent"
+                >
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                        >
 
-        <ImageView
-            android:id="@+id/tempIndicatorImage"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            app:layout_constraintStart_toEndOf="@id/weatherStateImage"
-            app:layout_constraintTop_toTopOf="@id/tempIndicatorTv"
-            app:layout_constraintBottom_toBottomOf="@id/tempIndicatorTv"
-            android:src="@drawable/ic_temperature"
-            />
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="80dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            android:visibility="gone"
+                            >
 
+                                <ProgressBar
+                                    android:id="@+id/progressBar"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:visibility="gone"
+                                    tools:visibility="visible"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    />
 
-        <TextView
-            android:id="@+id/tempIndicatorTv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toEndOf="@id/weatherStateImage"
-            app:layout_constraintTop_toTopOf="@id/weatherStateImage"
-            android:layout_marginStart="40dp"
-            tools:text="12 \u2103"
-            android:textSize="@dimen/current_temperature_indicator_size"
-            />
+                                <TextView
+                                    android:id="@+id/messageTextView"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:visibility="gone"
+                                    tools:visibility="visible"
+                                    tools:text="Error text here"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintBottom_toTopOf="@id/tryAgainButton"
+                                    />
 
-        <ImageView
-            android:id="@+id/windSpeedImage"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:src="@drawable/ic_wind"
-            app:layout_constraintStart_toEndOf="@id/weatherStateImage"
-            app:layout_constraintTop_toBottomOf="@id/tempIndicatorTv"
-            />
-
-        <TextView
-            android:id="@+id/windSpeedVal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toEndOf="@id/weatherStateImage"
-            app:layout_constraintTop_toBottomOf="@id/tempIndicatorTv"
-            android:layout_marginStart="40dp"
-            android:textSize="@dimen/current_temperature_indicator_size"
-            tools:text="16.6 km/h"
-            />
-
-        <ImageView
-            android:id="@+id/windDirectionsImage"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:src="@drawable/ic_winddirection"
-            app:layout_constraintStart_toEndOf="@id/weatherStateImage"
-            app:layout_constraintTop_toTopOf="@+id/windDirectionsVal"
-            app:layout_constraintBottom_toBottomOf="@+id/windDirectionsVal"
-            />
-
-        <TextView
-            android:id="@+id/windDirectionsVal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toEndOf="@id/weatherStateImage"
-            app:layout_constraintTop_toBottomOf="@id/windSpeedVal"
-            android:layout_marginStart="40dp"
-            android:textSize="@dimen/current_temperature_indicator_size"
-            tools:text="NN/M"
-            />
+                                <Button
+                                    android:id="@+id/tryAgainButton"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:visibility="gone"
+                                    tools:visibility="visible"
+                                    android:text="Try again"
+                                    android:layout_marginTop="2dp"
+                                    app:layout_constraintTop_toBottomOf="@id/messageTextView"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    />
 
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/weeklyForecastRecycler"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toEndOf="@id/startGuideline"
-            app:layout_constraintEnd_toEndOf="@id/endGuideline"
-            app:layout_constraintTop_toBottomOf="@id/weatherStateImage"
+                        </androidx.constraintlayout.widget.ConstraintLayout>
 
-            android:orientation="vertical"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/item_day_forecast"
-            />
+                        <androidx.constraintlayout.widget.Guideline
+                            android:id="@+id/startGuideline"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            app:layout_constraintGuide_begin="20dp"
+                            />
 
+                        <androidx.constraintlayout.widget.Guideline
+                            android:id="@+id/endGuideline"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            app:layout_constraintGuide_end="20dp"
+                            />
+
+
+
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/currentWeatherCard"
+                            app:layout_constraintStart_toStartOf="@id/startGuideline"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintEnd_toEndOf="@id/endGuideline"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            >
+                                <androidx.constraintlayout.widget.ConstraintLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    >
+                                        <ImageView
+                                            android:id="@+id/weatherStateImage"
+                                            android:layout_width="150dp"
+                                            android:layout_height="150dp"
+                                            app:layout_constraintStart_toStartOf="parent"
+                                            app:layout_constraintTop_toTopOf="parent"
+                                            android:layout_marginStart="@dimen/item_forecast_base_horizontal_offset"
+                                            android:layout_marginTop="@dimen/item_forecast_base_vertical_offset"
+                                            android:contentDescription="@string/home_weather_image_description"
+                                            android:src="@drawable/wmo_0" />
+
+                                        <ImageView
+                                            android:id="@+id/tempIndicatorImage"
+                                            android:layout_width="30dp"
+                                            android:layout_height="30dp"
+                                            android:layout_marginStart="@dimen/item_forecast_base_horizontal_offset"
+                                            app:layout_constraintStart_toEndOf="@id/weatherStateImage"
+                                            app:layout_constraintTop_toTopOf="@id/tempIndicatorTv"
+                                            app:layout_constraintBottom_toBottomOf="@id/tempIndicatorTv"
+                                            android:src="@drawable/ic_temperature"
+                                            />
+
+
+                                        <TextView
+                                            android:id="@+id/tempIndicatorTv"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            app:layout_constraintStart_toEndOf="@id/weatherStateImage"
+                                            app:layout_constraintTop_toTopOf="@id/weatherStateImage"
+                                            android:layout_marginStart="60dp"
+                                            tools:text="12 \u2103"
+                                            android:textSize="@dimen/current_temperature_indicator_size"
+                                            />
+
+                                        <ImageView
+                                            android:id="@+id/windSpeedImage"
+                                            android:layout_width="30dp"
+                                            android:layout_height="30dp"
+                                            android:src="@drawable/ic_wind"
+                                            android:layout_marginStart="@dimen/item_forecast_base_horizontal_offset"
+                                            app:layout_constraintStart_toEndOf="@id/weatherStateImage"
+                                            app:layout_constraintTop_toBottomOf="@id/tempIndicatorTv"
+                                            />
+
+                                        <TextView
+                                            android:id="@+id/windSpeedVal"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            app:layout_constraintStart_toEndOf="@id/weatherStateImage"
+                                            app:layout_constraintTop_toBottomOf="@id/tempIndicatorTv"
+                                            android:layout_marginStart="60dp"
+                                            android:textSize="@dimen/current_temperature_indicator_size"
+                                            tools:text="16.6 km/h"
+                                            />
+
+                                        <ImageView
+                                            android:id="@+id/windDirectionsImage"
+                                            android:layout_width="30dp"
+                                            android:layout_height="30dp"
+                                            android:src="@drawable/ic_winddirection"
+                                            app:layout_constraintStart_toEndOf="@id/weatherStateImage"
+                                            app:layout_constraintTop_toTopOf="@+id/windDirectionsVal"
+                                            app:layout_constraintBottom_toBottomOf="@+id/windDirectionsVal"
+                                            android:layout_marginStart="@dimen/item_forecast_base_horizontal_offset"
+                                            />
+
+                                        <TextView
+                                            android:id="@+id/windDirectionsVal"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            app:layout_constraintStart_toEndOf="@id/weatherStateImage"
+                                            app:layout_constraintTop_toBottomOf="@id/windSpeedVal"
+                                            android:layout_marginStart="60dp"
+                                            android:textSize="@dimen/current_temperature_indicator_size"
+                                            tools:text="NN/M"
+                                            />
+
+                                        <androidx.recyclerview.widget.RecyclerView
+                                            android:id="@+id/currentWeatherRecycler"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:paddingStart="10dp"
+                                            app:layout_constraintTop_toBottomOf="@id/weatherStateImage"
+                                            app:layout_constraintStart_toStartOf="parent"
+                                            app:layout_constraintEnd_toEndOf="parent"
+                                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                                            android:orientation="horizontal"
+                                            tools:listitem="@layout/item_hourly_forecast_list"
+                                            />
+
+                                </androidx.constraintlayout.widget.ConstraintLayout>
+                        </androidx.cardview.widget.CardView>
+
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/weeklyForecastRecycler"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/currentWeatherCard"
+                            android:orientation="vertical"
+                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                            tools:listitem="@layout/item_day_forecast"
+                            />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+        </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

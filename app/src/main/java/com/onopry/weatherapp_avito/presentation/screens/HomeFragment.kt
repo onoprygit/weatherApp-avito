@@ -80,29 +80,28 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     fun showError(msg: String){
+        binding.contentContainer.gone()
+        binding.errorBottomImage.show()
         with(binding.statePart) {
             progressBar.gone()
             errorMessageTv.show()
             tryAgainButton.show()
+            errorImage.show()
 
+            errorMessageTv.text = msg.ifBlank { getString(R.string.unexpected_error) }
+            tryAgainButton.setOnClickListener { viewModel.sendRefreshState(true) }
         }
-        /*
-            content = gone
-
-            progress = gone
-            error = show
-            msg = show
-        */
     }
 
     fun showLoading(){
-        /*
-            content = gone
-
-            Progress bar = show
-            error = gone
-            msg = gone
-        */
+        binding.contentContainer.gone()
+        binding.errorBottomImage.gone()
+        with(binding.statePart) {
+            progressBar.show()
+            errorMessageTv.gone()
+            tryAgainButton.gone()
+            errorImage.gone()
+        }
     }
 
     private fun setupSearch() {

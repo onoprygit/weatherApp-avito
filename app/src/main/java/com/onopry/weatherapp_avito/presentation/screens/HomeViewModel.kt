@@ -17,7 +17,6 @@ import com.onopry.weatherapp_avito.presentation.uistate.LocalityState
 import com.onopry.weatherapp_avito.presentation.uistate.PermissionState
 import com.onopry.weatherapp_avito.presentation.uistate.ScreenState
 import com.onopry.weatherapp_avito.presentation.uistate.SearchState
-import com.onopry.weatherapp_avito.utils.isNotNull
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -37,6 +36,11 @@ class HomeViewModel @Inject constructor(
     private val searchCityByQueryUseCase: SearchCityByQueryUseCase
 ) : ViewModel() {
     private val forecastPeriod = ForecastPeriod()
+    private var entryPreviousSearch = ""
+    private var searchQueryJob: Job? = null
+
+    private val refreshMutableFlow = MutableStateFlow(false)
+    val refreshState: StateFlow<Boolean> = refreshMutableFlow
 
     private val screenStateMutableFlow = MutableStateFlow<ScreenState>(ScreenState.Empty)
     val screenState: StateFlow<ScreenState> = screenStateMutableFlow
@@ -49,7 +53,39 @@ class HomeViewModel @Inject constructor(
 
     private val permissionMutableStateFlow =
         MutableStateFlow<PermissionState>(PermissionState.Empty)
-//    val permissionState: StateFlow<PermissionState> = permissionMutableStateFlow
+
+    private val searchStateMutableStateFlow = MutableStateFlow<SearchState>(SearchState.Empty)
+    val searchState: StateFlow<SearchState> = searchStateMutableStateFlow
+
+    private val entrySearch = MutableStateFlow("")
+    private val searchRequest = MutableStateFlow("")
+
+    fun sendLocalityState(state: LocalityState) {
+        viewModelScope.launch {
+            debugLog("Changing LocalityState in SetLocation(), STATE = ${state.javaClass.simpleName}")
+            localityMutableStateFlow.emit(state)
+        }
+    }
+
+    fun sendPermissionState(state: PermissionState) {
+        debugLog("Changing PermissionState in sendPermissionState(), STATE = ${state.javaClass.simpleName}")
+        viewModelScope.launch {
+            permissionMutableStateFlow.emit(state)
+        }
+    }
+
+    fun sendRefreshState(state: Boolean) {
+        viewModelScope.launch { refreshMutableFlow.emit(state) }
+    }
+
+    fun sendQuery(query: CharSequence) {
+        viewModelScope.launch {
+            val prevWithoutSpaces = entryPreviousSearch.replace("\\s".toRegex(), "")
+            val currWithoutSpaces = query.replace("\\s".toRegex(), "")
+            if (prevWithoutSpaces != currWithoutSpaces || query != currWithoutSpaces || query.isNotBlank())
+                entrySearch.emit(query.toString())
+        }
+    }
 
     private fun loadForecast() {
         viewModelScope.launch {
@@ -70,9 +106,18 @@ class HomeViewModel @Inject constructor(
                     is LocalityState.Empty -> {
                         getLocationByIpUseCase().collect { localityResult ->
                             when (localityResult) {
-                                is ApiSuccess -> localityMutableStateFlow.emit(LocalityState.City(locality = localityResult.data, isIpLocality = true))
+                                is ApiSuccess -> localityMutableStateFlow.emit(
+                                    LocalityState.City(
+                                        locality = localityResult.data,
+                                        isIpLocality = true
+                                    )
+                                )
                                 is ApiError -> localityMutableStateFlow.emit(LocalityState.Error(msg = localityResult.message))
-                                is ApiException -> localityMutableStateFlow.emit(LocalityState.Error(msg = localityResult.message))
+                                is ApiException -> localityMutableStateFlow.emit(
+                                    LocalityState.Error(
+                                        msg = localityResult.message
+                                    )
+                                )
                             }
                         }
                     }
@@ -84,6 +129,11 @@ class HomeViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    private fun refresh(isRefreshing: Boolean) {
+        if (isRefreshing)
+            loadForecast()
     }
 
     private fun getForecastByLocation(locality: LocalityState.City) {
@@ -101,9 +151,9 @@ class HomeViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
-    private fun getUserLocation(locality: LocalityState.City) {
-        if (locality.locality.name.isNullOrEmpty() && locality.locality.country.isNullOrEmpty()) {
-            getLocationNameUseCase(locality.locality.lat, locality.locality.lon)
+    private fun getUserLocation(userLocality: LocalityState.City) {
+        if (isLocalityHasFullData(userLocality.locality)) {
+            getLocationNameUseCase(userLocality.locality.lat, userLocality.locality.lon)
                 .onEach { locality ->
                     when (locality) {
                         is ApiSuccess -> localityMutableStateFlow.emit(
@@ -119,33 +169,8 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun sendLocalityState(state: LocalityState) {
-        viewModelScope.launch {
-            debugLog("Changing LocalityState in SetLocation(), STATE = ${state.javaClass.simpleName}")
-            localityMutableStateFlow.emit(state)
-        }
-    }
-
-
-    fun sendPermissionState(state: PermissionState) {
-        debugLog("Changing PermissionState in sendPermissionState(), STATE = ${state.javaClass.simpleName}")
-        viewModelScope.launch {
-            permissionMutableStateFlow.emit(state)
-        }
-    }
-
     private fun isLocalityHasFullData(locality: Locality) =
-        locality.name.isNotNull() && locality.country.isNotNull()
-
-
-    private var entryPreviousSearch= ""
-    private val entrySearch = MutableStateFlow("")
-    private val searchRequest = MutableStateFlow("")
-
-    private val searchStateMutableStateFlow = MutableStateFlow<SearchState>(SearchState.Empty)
-    val searchState: StateFlow<SearchState> = searchStateMutableStateFlow
-
-    private var searchQueryJob: Job? = null
+        !(locality.name.isNullOrEmpty() && locality.country.isNullOrEmpty())
 
     private fun search(query: String) {
         searchQueryJob?.cancel()
@@ -168,26 +193,25 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun sendQuery(query: CharSequence) {
-        viewModelScope.launch {
-            val prevWithoutSpaces = entryPreviousSearch.replace("\\s".toRegex(), "")
-            val currWithoutSpaces = query.replace("\\s".toRegex(), "")
-            if (prevWithoutSpaces != currWithoutSpaces || query != currWithoutSpaces || query.isNotBlank())
-                entrySearch.emit(query.toString())
-        }
-    }
 
     init {
+        refreshState
+            .onEach { isRefreshing ->
+                debugLog("Refresh state is [$isRefreshing]")
+                refresh(isRefreshing)
+            }.launchIn(viewModelScope)
+
         localityMutableStateFlow
             .onEach { localityState ->
                 debugLog("Locality state is [${localityState.javaClass.simpleName}]")
                 when (localityState) {
-                    is LocalityState.City -> {
-                        debugLog("Locality state is GRANTED [${localityState.locality.name}]")
-                        loadForecast()
-                    }
+                    is LocalityState.City -> loadForecast()
                     is LocalityState.Pending -> screenStateMutableFlow.emit(ScreenState.Loading)
-                    is LocalityState.Error -> screenStateMutableFlow.emit(ScreenState.LocationError(msg = localityState.msg))
+                    is LocalityState.Error -> screenStateMutableFlow.emit(
+                        ScreenState.LocationError(
+                            msg = localityState.msg
+                        )
+                    )
                 }
             }.launchIn(viewModelScope)
 

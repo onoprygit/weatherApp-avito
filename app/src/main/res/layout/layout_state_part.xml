@@ -17,23 +17,40 @@
         app:layout_constraintTop_toTopOf="parent"
         />
 
+    <ImageView
+        android:id="@+id/errorImage"
+        android:layout_width="350dp"
+        android:layout_height="350dp"
+        android:src="@drawable/img_error_box"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="ContentDescription" />
+
     <TextView
         android:id="@+id/errorMessageTv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="Unexpected error ocurred" />
+        android:layout_width="230dp"
+        android:layout_height="100dp"
+        android:textSize="20sp"
+        android:rotation="-10"
+        android:textColor="@color/white"
+        android:gravity="center|top"
+        app:layout_constraintEnd_toEndOf="@id/errorImage"
+        app:layout_constraintStart_toStartOf="@id/errorImage"
+        app:layout_constraintTop_toTopOf="@id/errorImage"
+        app:layout_constraintBottom_toBottomOf="@id/errorImage"
+        tools:text="Unexpected error occurred" />
 
     <Button
         android:id="@+id/tryAgainButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/reload_after_error_button"
+
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/errorMessageTv" />
+        app:layout_constraintBottom_toBottomOf="@id/errorImage" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

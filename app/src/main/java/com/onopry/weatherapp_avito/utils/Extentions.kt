@@ -5,11 +5,13 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import com.onopry.data.utils.debugLog
 import com.onopry.domain.model.forecast.Daily
 import com.onopry.weatherapp_avito.R
 import com.onopry.weatherapp_avito.presentation.model.DailyUi
 import okhttp3.OkHttpClient
+import java.time.LocalDate
+import java.time.format.TextStyle
+import java.util.*
 
 fun OkHttpClient.Builder.addQueryParam(
     name: String,
@@ -48,6 +50,23 @@ inline fun View.showIfConditionOrGone(condition: () -> Boolean) = apply {
 }
 
 fun Any?.isNotNull() = this != null
+
+fun LocalDate.getMonthName(fullName: Boolean) =
+    if (fullName) month.getDisplayName(TextStyle.FULL, Locale.ENGLISH) ?: "Month err"
+    else month.getDisplayName(TextStyle.SHORT, Locale.ENGLISH) ?: "Month err"
+
+
+fun LocalDate.getDayOfWeekName(fullName: Boolean) =
+    if (fullName) dayOfWeek.getDisplayName(TextStyle.FULL, Locale.ENGLISH) ?: "Day err"
+    else dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.ENGLISH) ?: "Day err"
+
+fun LocalDate.getDayOfWeekDayMonth(fullMonth: Boolean, fullDay: Boolean): String {
+    val day = getDayOfWeekName(fullName = fullDay)
+    val number = dayOfMonth
+    val month = getMonthName(fullMonth)
+    return "$day, $number $month"
+}
+//fun LocalDate.getCurrentDate
 
 fun ImageView.setImageByWeatherCode(code: Int) {
     when (code) {
@@ -93,8 +112,8 @@ fun ImageView.setImageByWeatherCode(code: Int) {
     }
 }
 
-fun TextView.setDescriptionByWeatherCode(code: Int){
-    when(code){
+fun TextView.setDescriptionByWeatherCode(code: Int) {
+    when (code) {
         0 -> setText(R.string.wmo_0)
 
         1 -> setText(R.string.wmo_1)
@@ -140,26 +159,21 @@ fun TextView.setDescriptionByWeatherCode(code: Int){
 object DailyToUiConverter {
     fun convert(dailyList: List<Daily>) = dailyList.map {
         convertDaily(it)
-    }.also {
-        it.map {
-            debugLog(it.toString())
-        }
-
     }
-
-    private fun convertDaily(daily: Daily) = DailyUi(
-        daily.hourlyWeather,
-        daily.apparentTemperatureMax,
-        daily.apparentTemperatureMin,
-        daily.precipitationHours,
-        daily.precipitationSum,
-        daily.sunrise,
-        daily.sunset,
-        daily.temperatureMax,
-        daily.temperatureMin,
-        daily.time,
-        daily.weatherCode,
-        daily.windSpeedMax,
-        isExpanded = false
-    )
 }
+
+private fun convertDaily(daily: Daily) = DailyUi(
+    daily.hourlyWeather,
+    daily.apparentTemperatureMax,
+    daily.apparentTemperatureMin,
+    daily.precipitationHours,
+    daily.precipitationSum,
+    daily.sunrise,
+    daily.sunset,
+    daily.temperatureMax,
+    daily.temperatureMin,
+    daily.time,
+    daily.weatherCode,
+    daily.windSpeedMax,
+    isExpanded = false
+)

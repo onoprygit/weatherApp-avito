@@ -4,11 +4,13 @@ import android.util.Log
 import com.onopry.data.datasources.remote.forecast.ForecastRemoteDataSource
 import com.onopry.data.datasources.remote.iplocation.IpLocationRemoteDataSource
 import com.onopry.data.datasources.remote.location.BaseLocationRemoteDataSource
-import com.onopry.data.model.toDomain
 import com.onopry.data.model.toDomainModel
+import com.onopry.data.model.toDomainSearchModel
+import com.onopry.domain.model.forecast.LocalitySearch
 import com.onopry.domain.repository.Repository
 import com.onopry.domain.utils.ApiError
 import com.onopry.domain.utils.ApiException
+import com.onopry.domain.utils.ApiResult
 import com.onopry.domain.utils.ApiSuccess
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
@@ -22,13 +24,14 @@ class ForecastRepository(
 ) : Repository {
 
     override fun getForecast(
-        lat: String,
-        lon: String,
+        lat: Float,
+        lon: Float,
         startDate: String,
         endDate: String
     ) = flow {
         try {
-            val forecastResponse = forecastSource.getForecast(lat, lon, startDate, endDate)
+            val forecastResponse =
+                forecastSource.getForecast(lat.toString(), lon.toString(), startDate, endDate)
             val body = forecastResponse.body()
 
             if (forecastResponse.isSuccessful && body != null) {
@@ -37,10 +40,10 @@ class ForecastRepository(
                 emit(ApiError(code = forecastResponse.code(), message = forecastResponse.message()))
             }
         } catch (e: HttpException) {
-            //            emit(ApiError(code = e.code(), e.message()))
+            emit(ApiError(code = e.code(), e.message()))
             throw e
         } catch (e: Exception) {
-            //            emit(ApiException(message = e.message.toString()))
+            emit(ApiException(message = e.message.toString()))
             throw e
         }
     }.flowOn(Dispatchers.IO)
@@ -89,13 +92,15 @@ class ForecastRepository(
 
     override fun searchCities(
         query: String,
-    ) = flow {
+    ) = flow<ApiResult<List<LocalitySearch>>> {
         val result = baseLocationSource.searchCities(query)
         val body = result.body()
 
         try {
             if (result.isSuccessful && body != null) {
-                emit(ApiSuccess(data = body.toDomain()))
+                emit(ApiSuccess(data = body.map {
+                    it.toDomainSearchModel()
+                }))
             } else {
                 emit(
                     ApiError(

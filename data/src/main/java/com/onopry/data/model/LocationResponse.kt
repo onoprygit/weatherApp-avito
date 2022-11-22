@@ -1,26 +1,41 @@
 package com.onopry.data.model
 
 import com.onopry.domain.model.forecast.Locality
+import com.onopry.domain.model.forecast.LocalitySearch
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import java.util.*
 
 @JsonClass(generateAdapter = true)
-data class CityLocationResponse(
+data class SearchResponse(
+    val cities: List<CityLocalityResponse>
+)
+
+@JsonClass(generateAdapter = true)
+data class CityLocalityResponse(
     val country: String,
     val lat: Float,
     val lon: Float,
     val name: String,
 )
 
-fun CityLocationResponse.toDomainModel() = Locality(
+fun CityLocalityResponse.toDomainModel() = Locality(
     country = country,
     lat = lat,
     lon = lon,
     name = name,
 )
 
+fun CityLocalityResponse.toDomainSearchModel() = LocalitySearch(
+    id = UUID.randomUUID(),
+    country = country,
+    lat = lat,
+    lon = lon,
+    name = name
+)
+
 @JsonClass(generateAdapter = true)
-data class CityByIpLocationResponse(
+data class CityByIpLocalityResponse(
     @Json(name = "country_code2")
     val country: String,
     @Json(name = "latitude")
@@ -31,7 +46,7 @@ data class CityByIpLocationResponse(
     val name: String,
 )
 
-fun CityByIpLocationResponse.toDomainModel() = Locality(
+fun CityByIpLocalityResponse.toDomainModel() = Locality(
     country = country,
     lat = lat,
     lon = lon,

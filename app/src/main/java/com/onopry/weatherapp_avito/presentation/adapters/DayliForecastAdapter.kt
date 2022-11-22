@@ -11,8 +11,7 @@ import com.onopry.weatherapp_avito.utils.setDescriptionByWeatherCode
 import com.onopry.weatherapp_avito.utils.setImageByWeatherCode
 import com.onopry.weatherapp_avito.utils.show
 import java.time.LocalDate
-import java.time.format.TextStyle
-import java.util.*
+import java.time.LocalDateTime
 
 typealias OnDaySelectedClickListener = () -> Unit
 
@@ -34,7 +33,7 @@ class DailyForecastAdapter() :
         val binding = ItemDayForecastBinding.inflate(
             LayoutInflater.from(parent.context)
         )
-        return DailyForecastViewHolder(binding)
+        return DailyForecastViewHolder(binding, HourlyForecastAdapter())
     }
 
     override fun onBindViewHolder(holder: DailyForecastViewHolder, position: Int) {
@@ -44,21 +43,27 @@ class DailyForecastAdapter() :
 
     override fun getItemCount() = dailyForecast.size
 
-    inner class DailyForecastViewHolder(private val binding: ItemDayForecastBinding) :
+    inner class DailyForecastViewHolder(
+        private val binding: ItemDayForecastBinding,
+        private val adapter: HourlyForecastAdapter
+    ) :
         RecyclerView.ViewHolder(binding.root) {
+
+        init {
+            binding.hourlyForecastRecycler.adapter = adapter
+        }
+
         fun bind(dailyWeather: DailyUi) {
             itemView.setOnClickListener {
                 val currentExpandedState = dailyWeather.isExpanded
                 dailyWeather.isExpanded = !currentExpandedState
-                notifyItemChanged(adapterPosition)
+                notifyItemChanged(absoluteAdapterPosition)
             }
             //            val date = LocalDateTime.parse(dailyWeather.time)
             val date = LocalDate.parse(dailyWeather.time)
             val dayOfWeek: String =
                 date.dayOfWeek.name
-//                    .toCharArray().map { it.lowercase() }.toString().replaceFirstChar { it.titlecase() }
             val month: String = date.month.name
-//                .getDisplayName(TextStyle.NARROW, Locale.ENGLISH).toCharArray().map { it.lowercase() }.toString().replaceFirstChar { it.titlecase() }
             with(binding) {
                 weatherStateImage.setImageByWeatherCode(dailyWeather.weatherCode)
                 tempMax.text = dailyWeather.temperatureMax
@@ -66,19 +71,17 @@ class DailyForecastAdapter() :
                 textWeatherDescription.setDescriptionByWeatherCode(dailyWeather.weatherCode)
                 forecastDateTv.text = "$dayOfWeek, $month ${date.dayOfMonth}"
 
+                val sunrise = LocalDateTime.parse(dailyWeather.sunrise).toLocalTime()
+                val sunset = LocalDateTime.parse(dailyWeather.sunset).toLocalTime()
 
-                if (!dailyWeather.isExpanded) {
-                    expandablePart.gone()
+                windValTv.text = dailyWeather.windSpeedMax
+                precipitationValTv.text = dailyWeather.precipitationSum
+                sunsetSunriseValTv.text = "${sunrise}/${sunset}"
 
-                    windValTv.text = dailyWeather.windSpeedMax
-                    precipitationValTv.text = dailyWeather.precipitationSum
-                    sunsetSunriseValTv.text = "${dailyWeather.sunrise}/${dailyWeather.sunset}"
+                adapter.updateHourlyForecastData(dailyWeather.hourlyWeather)
 
-                    hourlyForecastAdapter.updateHourlyForecastData(dailyWeather.hourlyWeather)
-                    hourlyForecastRecycler.adapter = hourlyForecastAdapter
-                } else {
-                    expandablePart.show()
-                }
+                if (!dailyWeather.isExpanded) expandablePart.gone()
+                else expandablePart.show()
             }
         }
     }

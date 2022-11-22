@@ -36,7 +36,7 @@ fun DailyResponse.toDomainModel(hourly: HourlyResponse, units: DailyUnitsRespons
             apparentTemperatureMax = apparentTemperatureMax[index].roundToInt().toString() + units.apparentTemperatureMax,
             apparentTemperatureMin = apparentTemperatureMin[index].roundToInt().toString() + units.apparentTemperatureMax,
             precipitationHours = precipitationHours[index].roundToInt().toString() + " " + units.precipitationHours,
-            precipitationSum = precipitationSum[index].roundToInt().toString() + " " + units.precipitationSum,
+            precipitationSum = precipitationSum[index].toString() + " " + units.precipitationSum,
             sunrise = sunrise[index],
             sunset = sunset[index],
             temperatureMax = temperatureMax[index].roundToInt().toString() + units.apparentTemperatureMax,

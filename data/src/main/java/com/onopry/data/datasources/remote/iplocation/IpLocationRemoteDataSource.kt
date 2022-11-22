@@ -1,10 +1,10 @@
 package com.onopry.data.datasources.remote.iplocation
 
-import com.onopry.data.model.CityByIpLocationResponse
+import com.onopry.data.model.CityByIpLocalityResponse
 import retrofit2.Response
 
 interface IpLocationRemoteDataSource {
-    suspend fun identifyLocationByIp(): Response<CityByIpLocationResponse>
+    suspend fun identifyLocationByIp(): Response<CityByIpLocalityResponse>
 }
 
 class IpLocationRemoteDataSourceImpl(

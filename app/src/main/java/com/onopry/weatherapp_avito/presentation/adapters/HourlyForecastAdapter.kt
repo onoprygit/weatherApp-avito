@@ -5,14 +5,13 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.onopry.domain.model.forecast.DailyUnits
 import com.onopry.domain.model.forecast.Hourly
-import com.onopry.domain.model.forecast.HourlyUnits
 import com.onopry.weatherapp_avito.databinding.ItemHourlyForecastListBinding
 import com.onopry.weatherapp_avito.utils.setImageByWeatherCode
 import java.time.LocalDateTime
 
-class HourlyForecastAdapter() : RecyclerView.Adapter<HourlyForecastAdapter.HourlyForecastViewHolder>() {
+class HourlyForecastAdapter() :
+    RecyclerView.Adapter<HourlyForecastAdapter.HourlyForecastViewHolder>() {
 
     private val hourlyForecast = mutableListOf<Hourly>()
 

@@ -1,7 +1,6 @@
 package com.onopry.data.model
 
 import com.onopry.domain.model.forecast.CurrentWeather
-import com.onopry.domain.model.forecast.HourlyUnits
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import kotlin.math.roundToInt

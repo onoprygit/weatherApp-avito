@@ -14,5 +14,4 @@ data class HourlyUnits(
     val weatherCode: String,
     val windDirection: String,
     val windSpeed: String
-    /*    val snow_depth: String,*/
 )

@@ -65,13 +65,22 @@ class HomeViewModel @Inject constructor(
                     }
                 }
             } else {
-                when(locality){
+                when (locality) {
                     is LocalityState.Empty -> {
-                        getLocationByIpUseCase().collect{ localityResult ->
-                            when(localityResult) {
-                                is ApiSuccess -> localityMutableStateFlow.emit(LocalityState.City(locality = localityResult.data, isIpLocality = true))
+                        getLocationByIpUseCase().collect { localityResult ->
+                            when (localityResult) {
+                                is ApiSuccess -> localityMutableStateFlow.emit(
+                                    LocalityState.City(
+                                        locality = localityResult.data,
+                                        isIpLocality = true
+                                    )
+                                )
                                 is ApiError -> localityMutableStateFlow.emit(LocalityState.Error(msg = localityResult.message))
-                                is ApiException -> localityMutableStateFlow.emit(LocalityState.Error(msg = localityResult.message))
+                                is ApiException -> localityMutableStateFlow.emit(
+                                    LocalityState.Error(
+                                        msg = localityResult.message
+                                    )
+                                )
                             }
                         }
                     }
@@ -105,7 +114,12 @@ class HomeViewModel @Inject constructor(
             getLocationNameUseCase(locality.locality.lat, locality.locality.lon)
                 .onEach { locality ->
                     when (locality) {
-                        is ApiSuccess -> localityMutableStateFlow.emit(LocalityState.City(locality = locality.data, isIpLocality = false))
+                        is ApiSuccess -> localityMutableStateFlow.emit(
+                            LocalityState.City(
+                                locality = locality.data,
+                                isIpLocality = false
+                            )
+                        )
                         is ApiError -> localityMutableStateFlow.emit(LocalityState.Error(msg = locality.message))
                         is ApiException -> localityMutableStateFlow.emit(LocalityState.Error(msg = locality.message))
                     }
@@ -153,7 +167,6 @@ class HomeViewModel @Inject constructor(
                             searchStateMutableStateFlow.emit(SearchState.Empty)
                         else {
                             searchStateMutableStateFlow.emit(SearchState.Content(cities = cities.data))
-//                            searchResponseMutableStateFlow.emit(cities.data.map { it.name })
                         }
                     }
                 }
@@ -183,9 +196,6 @@ class HomeViewModel @Inject constructor(
         permissionMutableStateFlow
             .onEach { permissionState ->
                 debugLog("Permission state is: [${permissionState.javaClass.simpleName}]")
-//                when (permissionState) {
-//                    is PermissionState.Denied -> localityMutableStateFlow.emit(LocalityState.None)
-//                }
             }.launchIn(viewModelScope)
 
         forecastMutableStateFlow
@@ -201,7 +211,6 @@ class HomeViewModel @Inject constructor(
         entrySearch
             .onEach {
                 if (it == "") searchQueryJob?.cancel()
-                //                else searchScreenStateFlow.emit(CityState.Search.Loading)
             }.debounce(500)
             .onEach { searchRequest.emit(it) }
             .launchIn(viewModelScope)
@@ -210,12 +219,5 @@ class HomeViewModel @Inject constructor(
             .filter { it != "" }
             .onEach { search(it) }
             .launchIn(viewModelScope)
-
-/*        searchStateMutableStateFlow
-            .onEach {
-                when (it) {
-                    is SearchState.Content -> screenStateMutableFlow.emit(SearchState.Content())
-                }
-            }*/
     }
 }

@@ -1,8 +1,8 @@
 package com.onopry.weatherapp_avito.di
 
+import com.onopry.data.datasources.remote.forecast.ForecastApi
 import com.onopry.data.datasources.remote.forecast.ForecastApiDataSource
 import com.onopry.data.datasources.remote.forecast.ForecastRemoteDataSource
-import com.onopry.data.datasources.remote.forecast.ForecastApi
 import com.onopry.data.datasources.remote.iplocation.IpGeolocationApi
 import com.onopry.data.datasources.remote.iplocation.IpLocationRemoteDataSource
 import com.onopry.data.datasources.remote.iplocation.IpLocationRemoteDataSourceImpl

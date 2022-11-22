@@ -22,7 +22,6 @@ class CitySearchAdapter(
         val nameLocality: TextView = itemView.findViewById(R.id.locationNameTv)
     }
 
-
     override fun getCount() = searchCitiesList.size
 
     override fun getItem(position: Int) = searchCitiesList[position]
@@ -51,7 +50,7 @@ class CitySearchAdapter(
             var suggestions = emptyList<LocalitySearch>()
             if (!constraint.isNullOrBlank()) {
                 suggestions = searchCitiesList.distinctBy { locality ->
-                    Pair(first = locality.name, second = locality.country,)
+                    Pair(first = locality.name, second = locality.country)
                 }
             }
             return FilterResults().also {

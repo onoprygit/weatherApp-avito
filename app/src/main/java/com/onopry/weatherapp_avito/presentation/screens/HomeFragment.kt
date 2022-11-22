@@ -49,7 +49,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private lateinit var binding: FragmentHomeBinding
     private val viewModel: HomeViewModel by viewModels()
-    //    private val viewModel: HomeViewModel by viewModels()
 
     private lateinit var dividerDailyList: DividerItemDecoration
     private val dailyListDecoration = DailyListDecoration()
@@ -78,7 +77,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             }
         }
 
-
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.localityState.collect { localityState ->
@@ -90,8 +88,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 }
             }
         }
-
-
 
         binding.autoCompleteTv.setOnItemClickListener { parent, _, pos, _ ->
             val city = parent.getItemAtPosition(pos) as LocalitySearch
@@ -145,9 +141,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                         is ForecastState.Success -> {
                             bindCurrentForecastData(forecastState)
                         }
-                        //                        ForecastState.Empty -> TODO()
-                        //                        is ForecastState.Error -> TODO()
-                        //                        ForecastState.Loading -> TODO()
                     }
                 }
             }
@@ -225,9 +218,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         } else {
             debugLog("Permission is not granted")
             askUserForOpeningAppSettings()
-            //            if (!shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_COARSE_LOCATION)) {
-            //
-            //            }
         }
     }
 
@@ -255,9 +245,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 viewModel.sendPermissionState(PermissionState.Granted)
             }
             debugLog("Fetching forecast")
-            //            viewModel.testForecast()
-            //            viewModel.fetchForecast()
-
         }
     }
 

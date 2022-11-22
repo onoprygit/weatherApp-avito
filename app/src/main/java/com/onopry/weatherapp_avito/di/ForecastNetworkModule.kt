@@ -18,14 +18,18 @@ object ForecastNetworkModule {
     @Provides
     @Singleton
     @RetrofitQualifiers.Forecast
-    fun provideForecastOkHttpClient(loggingInterceptor: HttpLoggingInterceptor) = OkHttpClient.Builder()
-        .addInterceptor(loggingInterceptor)
-        .build()
+    fun provideForecastOkHttpClient(loggingInterceptor: HttpLoggingInterceptor) =
+        OkHttpClient.Builder()
+            .addInterceptor(loggingInterceptor)
+            .build()
 
     @Provides
     @Singleton
     @RetrofitQualifiers.Forecast
-    fun provideForecastRetrofit(moshi: Moshi, @RetrofitQualifiers.Forecast client: OkHttpClient): Retrofit = Retrofit.Builder()
+    fun provideForecastRetrofit(
+        moshi: Moshi,
+        @RetrofitQualifiers.Forecast client: OkHttpClient
+    ): Retrofit = Retrofit.Builder()
         .baseUrl("https://api.open-meteo.com/v1/")
         .client(client)
         .addConverterFactory(MoshiConverterFactory.create(moshi))
@@ -33,6 +37,8 @@ object ForecastNetworkModule {
 
     @Provides
     @Singleton
-    fun provideForecastApi(@RetrofitQualifiers.Forecast retrofit: Retrofit): ForecastApi = retrofit.create(
-        ForecastApi::class.java)
+    fun provideForecastApi(@RetrofitQualifiers.Forecast retrofit: Retrofit): ForecastApi =
+        retrofit.create(
+            ForecastApi::class.java
+        )
 }

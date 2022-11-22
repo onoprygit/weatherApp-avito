@@ -59,7 +59,6 @@ class DailyForecastAdapter() :
                 dailyWeather.isExpanded = !currentExpandedState
                 notifyItemChanged(absoluteAdapterPosition)
             }
-            //            val date = LocalDateTime.parse(dailyWeather.time)
             val date = LocalDate.parse(dailyWeather.time)
             val dayOfWeek: String =
                 date.dayOfWeek.name

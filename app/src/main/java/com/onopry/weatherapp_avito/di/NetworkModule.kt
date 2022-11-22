@@ -17,5 +17,4 @@ object NetworkModule {
 
     @Provides
     fun provideMoshi(): Moshi = Moshi.Builder().build()
-
 }

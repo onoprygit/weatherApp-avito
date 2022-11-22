@@ -1,6 +1,5 @@
 package com.onopry.weatherapp_avito.presentation.model
 
-import com.onopry.domain.model.forecast.Daily
 import com.onopry.domain.model.forecast.Hourly
 import java.util.*
 

@@ -1,21 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardElevation="0dp"
-    android:elevation="0dp"
     android:layout_marginVertical="20dp"
-    app:contentPaddingBottom="12dp"
+    android:elevation="0dp"
+    app:cardBackgroundColor="@color/white"
     app:cardCornerRadius="20dp"
-    app:cardBackgroundColor="@color/white">
+    app:cardElevation="0dp"
+    app:contentPaddingBottom="12dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        >
+        android:layout_height="wrap_content">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/fixedPart"
@@ -116,14 +114,13 @@
 
             <TextView
                 android:id="@+id/windValTv"
+                style="@style/ForecastItemAccentFont"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="@id/windTitleTv"
                 app:layout_constraintStart_toEndOf="@id/guidelineCenter"
                 app:layout_constraintTop_toTopOf="@id/windTitleTv"
-                app:layout_constraintBottom_toBottomOf="@id/windTitleTv"
-                style="@style/ForecastItemAccentFont"
-                tools:text="10.2 km/h"
-                />
+                tools:text="10.2 km/h" />
 
             <TextView
                 android:id="@+id/precipitationTitleTv"
@@ -134,19 +131,17 @@
                 android:layout_marginTop="4dp"
                 android:text="@string/item_day_forecast_precipitation_title"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/windTitleTv"
-                />
+                app:layout_constraintTop_toBottomOf="@id/windTitleTv" />
 
             <TextView
                 android:id="@+id/precipitationValTv"
+                style="@style/ForecastItemAccentFont"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="@id/precipitationTitleTv"
                 app:layout_constraintStart_toEndOf="@id/guidelineCenter"
                 app:layout_constraintTop_toTopOf="@id/precipitationTitleTv"
-                app:layout_constraintBottom_toBottomOf="@id/precipitationTitleTv"
-                style="@style/ForecastItemAccentFont"
-                tools:text="720 mm"
-                />
+                tools:text="720 mm" />
 
             <TextView
                 android:id="@+id/sunsetSunriseTitleTv"
@@ -162,14 +157,13 @@
 
             <TextView
                 android:id="@+id/sunsetSunriseValTv"
+                style="@style/ForecastItemAccentFont"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="@id/sunsetSunriseTitleTv"
                 app:layout_constraintStart_toEndOf="@id/guidelineCenter"
                 app:layout_constraintTop_toTopOf="@id/sunsetSunriseTitleTv"
-                app:layout_constraintBottom_toBottomOf="@id/sunsetSunriseTitleTv"
-                style="@style/ForecastItemAccentFont"
-                tools:text="09:19 - 17:13"
-                />
+                tools:text="09:19 - 17:13" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/hourlyForecastRecycler"

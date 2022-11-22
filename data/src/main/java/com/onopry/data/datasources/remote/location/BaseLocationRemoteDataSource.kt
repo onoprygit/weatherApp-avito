@@ -1,7 +1,6 @@
 package com.onopry.data.datasources.remote.location
 
 import com.onopry.data.model.CityLocalityResponse
-import com.onopry.domain.model.forecast.LocalitySearch
 import retrofit2.Response
 
 interface BaseLocationRemoteDataSource {

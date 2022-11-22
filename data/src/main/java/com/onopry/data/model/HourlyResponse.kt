@@ -32,7 +32,6 @@ data class HourlyResponse(
 )
 
 
-
 fun HourlyResponse.toDomainModel(dayDate: String, units: HourlyUnitsResponse): List<Hourly> {
     val rootDate = LocalDate.parse(dayDate)
     return time.mapIndexed { index, time ->
@@ -56,21 +55,3 @@ fun HourlyResponse.toDomainModel(dayDate: String, units: HourlyUnitsResponse): L
         rootDate.year == hourlyDate.year && rootDate.dayOfYear == hourlyDate.dayOfYear
     }
 }
-
-
-/*
-fun HourlyResponse.toDomainModel() = Hourly(
-    apparentTemperature = apparentTemperature.map { it.roundToInt() },
-    freezingLevelHeight = freezingLevelHeight.map { it.roundToInt() },
-    precipitation = precipitation,
-    rain = rain,
-    relativeHumidity = relativeHumidity,
-    showers = showers,
-    snowfall = snowfall,
-    temperature_2m = temperature_2m.map { it.roundToInt() },
-    time = time,
-    visibility = visibility.map { it.roundToInt() },
-    weatherCode = weatherCode,
-    windDirection = windDirection,
-    windSpeed = windSpeed.map { it.roundToInt() }
-)*/

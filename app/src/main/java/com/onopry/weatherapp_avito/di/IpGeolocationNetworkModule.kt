@@ -20,15 +20,19 @@ object IpGeolocationNetworkModule {
     @Provides
     @Singleton
     @RetrofitQualifiers.IpGeolocation
-    fun provideIpGeolocationOkHttpClient(loggingInterceptor: HttpLoggingInterceptor) = OkHttpClient.Builder()
-        .addQueryParam("apiKey", ApiKeys.IP_GEOLOCATION_KEY)
-        .addInterceptor(loggingInterceptor)
-        .build()
+    fun provideIpGeolocationOkHttpClient(loggingInterceptor: HttpLoggingInterceptor) =
+        OkHttpClient.Builder()
+            .addQueryParam("apiKey", ApiKeys.IP_GEOLOCATION_KEY)
+            .addInterceptor(loggingInterceptor)
+            .build()
 
     @Provides
     @Singleton
     @RetrofitQualifiers.IpGeolocation
-    fun provideGeoLocationRetrofit(moshi: Moshi, @RetrofitQualifiers.IpGeolocation client: OkHttpClient): Retrofit = Retrofit.Builder()
+    fun provideGeoLocationRetrofit(
+        moshi: Moshi,
+        @RetrofitQualifiers.IpGeolocation client: OkHttpClient
+    ): Retrofit = Retrofit.Builder()
         .baseUrl("https://api.ipgeolocation.io/")
         .client(client)
         .addConverterFactory(MoshiConverterFactory.create(moshi))
@@ -36,6 +40,8 @@ object IpGeolocationNetworkModule {
 
     @Provides
     @Singleton
-    fun provideGeoLocationApi(@RetrofitQualifiers.IpGeolocation retrofit: Retrofit): IpGeolocationApi = retrofit.create(
-        IpGeolocationApi::class.java)
+    fun provideGeoLocationApi(@RetrofitQualifiers.IpGeolocation retrofit: Retrofit): IpGeolocationApi =
+        retrofit.create(
+            IpGeolocationApi::class.java
+        )
 }

@@ -5,8 +5,8 @@ import kotlinx.coroutines.flow.map
 
 class GetForecastUseCase(private val repository: Repository) {
     operator fun invoke(
-        lat: String,
-        lon: String,
+        lat: Float,
+        lon: Float,
         startDate: String,
         endDate: String
     ) = repository.getForecast(lat, lon, startDate, endDate)

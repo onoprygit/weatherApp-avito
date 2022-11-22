@@ -2,91 +2,87 @@
 <androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    app:cardElevation="0dp"
+    android:elevation="0dp"
+    android:layout_marginVertical="20dp"
+    app:contentPaddingBottom="12dp"
+    app:cardCornerRadius="20dp"
+    app:cardBackgroundColor="@color/white">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         >
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/fixedPart"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            >
+            android:layout_alignParentTop="true">
+
             <TextView
                 android:id="@+id/forecastDateTv"
                 style="@style/ForecastItemAccentFont"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                android:textSize="12sp"
                 android:layout_marginStart="@dimen/item_forecast_base_horizontal_offset"
                 android:layout_marginTop="@dimen/item_forecast_base_vertical_offset"
-                tools:text="Sunday, 16 Nov"
-                />
+                android:textSize="12sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Sunday, 16 Nov" />
 
             <TextView
                 android:id="@+id/textWeatherDescription"
+                style="@style/ForecastItemDefaultFont"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/forecastDateTv"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginStart="@dimen/item_forecast_base_horizontal_offset"
                 android:layout_marginTop="@dimen/item_forecast_base_vertical_offset"
                 android:layout_marginBottom="@dimen/item_forecast_base_vertical_offset"
-                android:layout_marginStart="@dimen/item_forecast_base_horizontal_offset"
-                tools:text="@string/wmo_99"
-                style="@style/ForecastItemDefaultFont"
-                />
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/forecastDateTv"
+                tools:text="@string/wmo_99" />
 
             <TextView
-                style="@style/ForecastItemAccentFont"
                 android:id="@+id/tempMax"
+                style="@style/ForecastItemAccentFont"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toTopOf="@id/tempMin"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toTopOf="@id/tempMin"
-                android:layout_marginEnd="@dimen/item_forecast_base_horizontal_offset"
-                android:textSize="20sp"
-                tools:text="4 C"
-                />
+                tools:text="4 C" />
 
             <TextView
-                style="@style/ForecastItemDefaultFont"
                 android:id="@+id/tempMin"
+                style="@style/ForecastItemDefaultFont"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tempMax"
-                android:layout_marginEnd="@dimen/item_forecast_base_horizontal_offset"
+                android:layout_marginEnd="8dp"
                 android:textSize="20sp"
-                tools:text="-4 C"
-                />
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tempMax"
+                tools:text="-4 C" />
 
             <ImageView
                 android:id="@+id/weatherStateImage"
                 android:layout_width="wrap_content"
                 android:layout_height="67dp"
+                android:layout_marginEnd="12dp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/tempMin"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                android:layout_marginEnd="@dimen/item_forecast_base_horizontal_offset"
-                tools:src="@drawable/wmo_51_61"
-                />
+                tools:src="@drawable/wmo_51_61" />
 
-<!--            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/partsSeparator"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:layout_constraintGuide_begin="70dp"
-                />-->
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -96,112 +92,96 @@
             android:layout_below="@id/fixedPart"
 
             android:visibility="gone"
-            tools:visibility="visible"
-            >
-            <LinearLayout
-                android:id="@+id/windRow"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:orientation="horizontal"
-                android:weightSum="2"
-                >
-                <TextView
-                    android:id="@+id/windTitleTv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:layout_marginStart="@dimen/item_forecast_base_horizontal_offset"
-                    style="@style/ForecastItemDefaultFont"
-                    android:text="Wind:"
-                    android:layout_weight="1"
-                    />
-                <TextView
-                    android:id="@+id/windValTv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    style="@style/ForecastItemDefaultFont"
-                    tools:text="фывафыва"
-                    android:layout_weight="1"
-                    />
-            </LinearLayout>
+            tools:visibility="visible">
 
-            <LinearLayout
-                android:id="@+id/precipitationRow"
-                android:layout_width="match_parent"
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guidelineCenter"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/windRow"
-                app:layout_constraintStart_toStartOf="parent"
+                android:orientation="vertical"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:orientation="horizontal"
-                android:weightSum="2"
-                >
-                <TextView
-                    android:id="@+id/precipitationTitleTv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:layout_marginStart="@dimen/item_forecast_base_horizontal_offset"
-                    style="@style/ForecastItemDefaultFont"
-                    android:text="Precipitation:"
-                    android:layout_weight="1"
-                    />
-                <TextView
-                    android:id="@+id/precipitationValTv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    style="@style/ForecastItemDefaultFont"
-                    tools:text="фывафыва"
-                    android:layout_weight="1"
-                    />
-            </LinearLayout>
+                app:layout_constraintGuide_percent="0.6"
+                app:layout_constraintStart_toStartOf="parent" />
 
-            <LinearLayout
-                android:id="@+id/sunRow"
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/windTitleTv"
+                style="@style/ForecastItemDefaultFont"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/precipitationRow"
+                android:layout_marginStart="@dimen/item_forecast_base_horizontal_offset"
+                android:layout_weight="1"
+                android:text="@string/item_day_forecast_wind_title"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:orientation="horizontal"
-                >
-                <TextView
-                    android:id="@+id/sunsetSunriseTitleTv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:layout_marginStart="@dimen/item_forecast_base_horizontal_offset"
-                    style="@style/ForecastItemDefaultFont"
-                    android:text="Sunrise/sunset:"
-                    android:layout_weight="1"
-                    />
-                <TextView
-                    android:id="@+id/sunsetSunriseValTv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    style="@style/ForecastItemDefaultFont"
-                    tools:text="фывафыва"
-                    android:layout_weight="1"
-                    />
-            </LinearLayout>
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/windValTv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toEndOf="@id/guidelineCenter"
+                app:layout_constraintTop_toTopOf="@id/windTitleTv"
+                app:layout_constraintBottom_toBottomOf="@id/windTitleTv"
+                style="@style/ForecastItemAccentFont"
+                tools:text="10.2 km/h"
+                />
+
+            <TextView
+                android:id="@+id/precipitationTitleTv"
+                style="@style/ForecastItemDefaultFont"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/item_forecast_base_horizontal_offset"
+                android:layout_marginTop="4dp"
+                android:text="@string/item_day_forecast_precipitation_title"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/windTitleTv"
+                />
+
+            <TextView
+                android:id="@+id/precipitationValTv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toEndOf="@id/guidelineCenter"
+                app:layout_constraintTop_toTopOf="@id/precipitationTitleTv"
+                app:layout_constraintBottom_toBottomOf="@id/precipitationTitleTv"
+                style="@style/ForecastItemAccentFont"
+                tools:text="720 mm"
+                />
+
+            <TextView
+                android:id="@+id/sunsetSunriseTitleTv"
+                style="@style/ForecastItemDefaultFont"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/item_forecast_base_horizontal_offset"
+                android:layout_marginTop="4dp"
+                android:layout_weight="1"
+                android:text="@string/item_day_forecast_sunrise_sunset_title"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/precipitationTitleTv" />
+
+            <TextView
+                android:id="@+id/sunsetSunriseValTv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toEndOf="@id/guidelineCenter"
+                app:layout_constraintTop_toTopOf="@id/sunsetSunriseTitleTv"
+                app:layout_constraintBottom_toBottomOf="@id/sunsetSunriseTitleTv"
+                style="@style/ForecastItemAccentFont"
+                tools:text="09:19 - 17:13"
+                />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/hourlyForecastRecycler"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/sunRow"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginTop="8dp"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 android:orientation="horizontal"
-                tools:listitem="@layout/item_hourly_forecast_list"
-                />
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/sunsetSunriseTitleTv"
+                tools:listitem="@layout/item_hourly_forecast_list" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,7 +1,7 @@
 package com.onopry.data.datasources.remote.location
 
-import com.onopry.data.model.CityLocationResponse
-import com.onopry.data.model.CityResponse
+import com.onopry.data.model.CityLocalityResponse
+import com.onopry.domain.model.forecast.LocalitySearch
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -15,10 +15,10 @@ interface LocationApi {
     suspend fun getLocation(
         @Query("lat") lat: String,
         @Query("lon") lon: String
-    ): Response<List<CityLocationResponse>>
+    ): Response<List<CityLocalityResponse>>
 
-    @GET("geo/1.0/direct")
-    suspend fun getCities(
+    @GET("./direct?limit=5")
+    suspend fun searchLocation(
         @Query("q") q: String,
-    ): Response<CityResponse>
+    ): Response<List<CityLocalityResponse>>
 }

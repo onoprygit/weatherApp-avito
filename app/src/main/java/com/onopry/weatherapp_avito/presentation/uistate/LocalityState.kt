@@ -6,6 +6,7 @@ sealed class LocalityState {
     object Empty: LocalityState()
     object None: LocalityState()
     object Pending : LocalityState()
+    class Error(val msg: String): LocalityState()
     class City(
         val locality: Locality,
         val isIpLocality: Boolean

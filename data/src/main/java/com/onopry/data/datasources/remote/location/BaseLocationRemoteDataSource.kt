@@ -1,16 +1,16 @@
 package com.onopry.data.datasources.remote.location
 
-import com.onopry.data.model.CityLocationResponse
-import com.onopry.data.model.CityResponse
+import com.onopry.data.model.CityLocalityResponse
+import com.onopry.domain.model.forecast.LocalitySearch
 import retrofit2.Response
 
 interface BaseLocationRemoteDataSource {
     suspend fun identifyLocality(
         lat: String,
         lon: String
-    ): Response<List<CityLocationResponse>>
+    ): Response<List<CityLocalityResponse>>
 
-    suspend fun searchCities(query: String): Response<CityResponse>
+    suspend fun searchCities(query: String): Response<List<CityLocalityResponse>>
 }
 
 class BaseLocationRemoteDataSourceImpl(
@@ -23,5 +23,5 @@ class BaseLocationRemoteDataSourceImpl(
 
     override suspend fun searchCities(
         query: String
-    ) = api.getCities(query)
+    ) = api.searchLocation(query)
 }

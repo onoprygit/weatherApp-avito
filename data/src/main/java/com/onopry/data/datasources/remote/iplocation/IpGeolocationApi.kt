@@ -1,6 +1,6 @@
 package com.onopry.data.datasources.remote.iplocation
 
-import com.onopry.data.model.CityByIpLocationResponse
+import com.onopry.data.model.CityByIpLocalityResponse
 import retrofit2.Response
 import retrofit2.http.GET
 
@@ -10,5 +10,5 @@ import retrofit2.http.GET
 
 interface IpGeolocationApi {
     @GET("./ipgeo")
-    suspend fun getLocationByIp(): Response<CityByIpLocationResponse>
+    suspend fun getLocationByIp(): Response<CityByIpLocalityResponse>
 }

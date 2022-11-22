@@ -49,7 +49,7 @@ class HomeViewModel @Inject constructor(
 
     private val permissionMutableStateFlow =
         MutableStateFlow<PermissionState>(PermissionState.Empty)
-    val permissionState: StateFlow<PermissionState> = permissionMutableStateFlow
+//    val permissionState: StateFlow<PermissionState> = permissionMutableStateFlow
 
     private fun loadForecast() {
         viewModelScope.launch {
@@ -63,32 +63,24 @@ class HomeViewModel @Inject constructor(
                         getUserLocation(locality)
                         getForecastByLocation(locality)
                     }
+
                 }
             } else {
                 when (locality) {
                     is LocalityState.Empty -> {
                         getLocationByIpUseCase().collect { localityResult ->
                             when (localityResult) {
-                                is ApiSuccess -> localityMutableStateFlow.emit(
-                                    LocalityState.City(
-                                        locality = localityResult.data,
-                                        isIpLocality = true
-                                    )
-                                )
+                                is ApiSuccess -> localityMutableStateFlow.emit(LocalityState.City(locality = localityResult.data, isIpLocality = true))
                                 is ApiError -> localityMutableStateFlow.emit(LocalityState.Error(msg = localityResult.message))
-                                is ApiException -> localityMutableStateFlow.emit(
-                                    LocalityState.Error(
-                                        msg = localityResult.message
-                                    )
-                                )
+                                is ApiException -> localityMutableStateFlow.emit(LocalityState.Error(msg = localityResult.message))
                             }
                         }
                     }
-
                     is LocalityState.City -> {
                         getUserLocation(locality)
                         getForecastByLocation(locality)
                     }
+
                 }
             }
         }
@@ -146,6 +138,7 @@ class HomeViewModel @Inject constructor(
         locality.name.isNotNull() && locality.country.isNotNull()
 
 
+    private var entryPreviousSearch= ""
     private val entrySearch = MutableStateFlow("")
     private val searchRequest = MutableStateFlow("")
 
@@ -175,9 +168,12 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun sendQuery(s: CharSequence) {
+    fun sendQuery(query: CharSequence) {
         viewModelScope.launch {
-            entrySearch.emit(s.toString())
+            val prevWithoutSpaces = entryPreviousSearch.replace("\\s".toRegex(), "")
+            val currWithoutSpaces = query.replace("\\s".toRegex(), "")
+            if (prevWithoutSpaces != currWithoutSpaces || query != currWithoutSpaces || query.isNotBlank())
+                entrySearch.emit(query.toString())
         }
     }
 
@@ -190,12 +186,15 @@ class HomeViewModel @Inject constructor(
                         debugLog("Locality state is GRANTED [${localityState.locality.name}]")
                         loadForecast()
                     }
+                    is LocalityState.Pending -> screenStateMutableFlow.emit(ScreenState.Loading)
+                    is LocalityState.Error -> screenStateMutableFlow.emit(ScreenState.LocationError(msg = localityState.msg))
                 }
             }.launchIn(viewModelScope)
 
         permissionMutableStateFlow
             .onEach { permissionState ->
                 debugLog("Permission state is: [${permissionState.javaClass.simpleName}]")
+                if (permissionState is PermissionState.Denied) sendLocalityState(LocalityState.None)
             }.launchIn(viewModelScope)
 
         forecastMutableStateFlow
@@ -205,12 +204,14 @@ class HomeViewModel @Inject constructor(
                     is ForecastState.Error -> screenStateMutableFlow.emit(
                         ScreenState.ForecastError(msg = forecastState.message)
                     )
+                    is ForecastState.Loading -> screenStateMutableFlow.emit(ScreenState.Loading)
                 }
             }.launchIn(viewModelScope)
 
         entrySearch
-            .onEach {
-                if (it == "") searchQueryJob?.cancel()
+            .onEach { query ->
+                if (query == "")
+                    searchQueryJob?.cancel()
             }.debounce(500)
             .onEach { searchRequest.emit(it) }
             .launchIn(viewModelScope)

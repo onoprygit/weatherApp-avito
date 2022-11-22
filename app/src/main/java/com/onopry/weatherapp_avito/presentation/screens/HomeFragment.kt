@@ -37,9 +37,11 @@ import com.onopry.weatherapp_avito.presentation.uistate.PermissionState
 import com.onopry.weatherapp_avito.presentation.uistate.SearchState
 import com.onopry.weatherapp_avito.utils.DailyToUiConverter
 import com.onopry.weatherapp_avito.utils.getDayOfWeekDayMonth
+import com.onopry.weatherapp_avito.utils.gone
 import com.onopry.weatherapp_avito.utils.setDescriptionByWeatherCode
 import com.onopry.weatherapp_avito.utils.setImageByWeatherCode
 import com.onopry.weatherapp_avito.utils.shortToast
+import com.onopry.weatherapp_avito.utils.show
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
@@ -50,12 +52,20 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private lateinit var binding: FragmentHomeBinding
     private val viewModel: HomeViewModel by viewModels()
 
-    private lateinit var dividerDailyList: DividerItemDecoration
-    private val dailyListDecoration = DailyListDecoration()
-    private val hourlyListDecoration = HourlyListDecoration()
-
     private val geoLocationPermissionLauncher =
         registerForActivityResult(RequestPermission(), ::onGrantedGeoPermissionResult)
+
+    private val dailyListDecoration: DailyListDecoration by lazy { DailyListDecoration() }
+    private val hourlyListDecoration: HourlyListDecoration by lazy { HourlyListDecoration() }
+    private val dividerDailyList: DividerItemDecoration by lazy {
+        val drawable = ResourcesCompat.getDrawable(resources, R.drawable.devider, null)
+        DividerItemDecoration(requireContext(), RecyclerView.VERTICAL).also { divider ->
+            drawable?.let { itDrawable ->
+                divider.setDrawable(itDrawable)
+            }
+        }
+    }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -64,17 +74,40 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         debugLog("Checking permission")
         geoLocationPermissionLauncher.launch(Manifest.permission.ACCESS_COARSE_LOCATION)
 
-        dividerDailyList = DividerItemDecoration(requireContext(), RecyclerView.VERTICAL)
-        ResourcesCompat.getDrawable(resources, R.drawable.devider, null)?.let {
-            dividerDailyList.setDrawable(it)
+        setupForecast()
+        setupLocality()
+        setupSearch()
+    }
+
+    fun showError(msg: String){
+        with(binding.statePart) {
+            progressBar.gone()
+            errorMessageTv.show()
+            tryAgainButton.show()
+
         }
+        /*
+            content = gone
 
-        observeViewModelStates()
+            progress = gone
+            error = show
+            msg = show
+        */
+    }
 
+    fun showLoading(){
+        /*
+            content = gone
+
+            Progress bar = show
+            error = gone
+            msg = gone
+        */
+    }
+
+    private fun setupSearch() {
         binding.autoCompleteTv.doOnTextChanged { query, _, _, _ ->
-            query?.let {
-                viewModel.sendQuery(it)
-            }
+            query?.let { viewModel.sendQuery(it) }
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -120,34 +153,22 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 }
             }
         }
-
-
-        handleErrorStates()
     }
 
-    private fun handleErrorStates() {
-    }
 
-    private fun observeViewModelStates() {
-        observeForecastState()
-        observeLocalityState()
-    }
-
-    private fun observeForecastState() {
+    private fun setupForecast() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.forecastState.collect { forecastState: ForecastState ->
                     when (forecastState) {
-                        is ForecastState.Success -> {
-                            bindCurrentForecastData(forecastState)
-                        }
+                        is ForecastState.Success -> bindCurrentForecastData(forecastState)
                     }
                 }
             }
         }
     }
 
-    private fun observeLocalityState() {
+    private fun setupLocality() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.localityState.collect { localityState ->
@@ -198,16 +219,21 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             currentWeatherSun.infoValueTv.text =
                 "${sunrise.hour}:${sunrise.minute} - ${sunset.hour}:${sunset.minute}"
 
-            val hourlyForecastAdapter = HourlyForecastAdapter()
-            hourlyForecastAdapter.updateHourlyForecastData(forecastState.data.dailyWeather[0].hourlyWeather)
-            currentWeatherRecycler.adapter = hourlyForecastAdapter
-            currentWeatherRecycler.addItemDecoration(hourlyListDecoration)
-
-            val dailyForecastAdapter = DailyForecastAdapter()
-            dailyForecastAdapter.updateDailyForecastData(DailyToUiConverter.convert(forecastState.data.dailyWeather))
-            weeklyForecastRecycler.adapter = dailyForecastAdapter
-            weeklyForecastRecycler.addItemDecoration(DailyListDecoration())
+            setupRecyclers(forecastState)
         }
+    }
+
+    private fun setupRecyclers(forecastState: ForecastState.Success) {
+
+        val hourlyForecastAdapter = HourlyForecastAdapter()
+        hourlyForecastAdapter.updateHourlyForecastData(forecastState.data.dailyWeather[0].hourlyWeather)
+        binding.currentWeatherRecycler.adapter = hourlyForecastAdapter
+        binding.currentWeatherRecycler.addItemDecoration(hourlyListDecoration)
+
+        val dailyForecastAdapter = DailyForecastAdapter()
+        dailyForecastAdapter.updateDailyForecastData(DailyToUiConverter.convert(forecastState.data.dailyWeather))
+        binding.weeklyForecastRecycler.adapter = dailyForecastAdapter
+        binding.weeklyForecastRecycler.addItemDecoration(DailyListDecoration())
     }
 
     private fun onGrantedGeoPermissionResult(granted: Boolean) {

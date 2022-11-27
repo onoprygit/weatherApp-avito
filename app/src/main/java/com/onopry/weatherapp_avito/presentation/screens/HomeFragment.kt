@@ -34,6 +34,7 @@ import com.onopry.weatherapp_avito.presentation.adapters.HourlyListDecoration
 import com.onopry.weatherapp_avito.presentation.uistate.ForecastState
 import com.onopry.weatherapp_avito.presentation.uistate.LocalityState
 import com.onopry.weatherapp_avito.presentation.uistate.PermissionState
+import com.onopry.weatherapp_avito.presentation.uistate.ScreenState
 import com.onopry.weatherapp_avito.presentation.uistate.SearchState
 import com.onopry.weatherapp_avito.utils.DailyToUiConverter
 import com.onopry.weatherapp_avito.utils.getDayOfWeekDayMonth
@@ -57,14 +58,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private val dailyListDecoration: DailyListDecoration by lazy { DailyListDecoration() }
     private val hourlyListDecoration: HourlyListDecoration by lazy { HourlyListDecoration() }
-    private val dividerDailyList: DividerItemDecoration by lazy {
-        val drawable = ResourcesCompat.getDrawable(resources, R.drawable.devider, null)
-        DividerItemDecoration(requireContext(), RecyclerView.VERTICAL).also { divider ->
-            drawable?.let { itDrawable ->
-                divider.setDrawable(itDrawable)
-            }
-        }
-    }
+
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -77,13 +71,43 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         setupForecast()
         setupLocality()
         setupSearch()
+        handleScreenState()
     }
 
-    fun showError(msg: String){
+    private fun handleScreenState() {
+        binding.refresh.setOnRefreshListener {
+            viewModel.sendRefreshAction()
+            binding.refresh.isRefreshing = false
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.screenState.collect { screenState ->
+                    when (screenState) {
+                        is ScreenState.Loading -> {
+                            showLoading()
+                        }
+                        is ScreenState.ForecastError -> {
+                            showError(screenState.msg)
+                        }
+                        is ScreenState.LocationError -> {
+                            showError(screenState.msg)
+                        }
+                        is ScreenState.Content -> {
+                            showContent()
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun showError(msg: String) {
         binding.contentContainer.gone()
         binding.errorBottomImage.show()
+        binding.refresh.isRefreshing = false
         with(binding.statePart) {
-            progressBar.gone()
+//            progressBar.gone()
             errorMessageTv.show()
             tryAgainButton.show()
             errorImage.show()
@@ -93,11 +117,24 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         }
     }
 
-    fun showLoading(){
+    private fun showLoading() {
         binding.contentContainer.gone()
         binding.errorBottomImage.gone()
+        binding.refresh.isRefreshing = true
         with(binding.statePart) {
-            progressBar.show()
+//            progressBar.show()
+            errorMessageTv.gone()
+            tryAgainButton.gone()
+            errorImage.gone()
+        }
+    }
+
+    private fun showContent() {
+        binding.contentContainer.show()
+        binding.errorBottomImage.gone()
+        binding.refresh.isRefreshing = false
+        with(binding.statePart) {
+//            progressBar.gone()
             errorMessageTv.gone()
             tryAgainButton.gone()
             errorImage.gone()
@@ -114,7 +151,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 viewModel.localityState.collect { localityState ->
                     when (localityState) {
                         is LocalityState.City -> binding.autoCompleteTv.setText("${localityState.locality.country}, ${localityState.locality.name}")
-                        is LocalityState.Pending -> binding.autoCompleteTv.setText("Loading your location...")
+//                        is LocalityState.Pending -> binding.autoCompleteTv.setText("Loading your location...")
                         is LocalityState.Error -> binding.autoCompleteTv.setText("Cannot identify name of your location")
                     }
                 }
@@ -160,7 +197,12 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.forecastState.collect { forecastState: ForecastState ->
                     when (forecastState) {
-                        is ForecastState.Success -> bindCurrentForecastData(forecastState)
+                        is ForecastState.Success -> {
+                            showContent()
+                            bindCurrentForecastData(forecastState)
+                        }
+                        is ForecastState.Loading ->
+                            showLoading()
                     }
                 }
             }
@@ -232,7 +274,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         val dailyForecastAdapter = DailyForecastAdapter()
         dailyForecastAdapter.updateDailyForecastData(DailyToUiConverter.convert(forecastState.data.dailyWeather))
         binding.weeklyForecastRecycler.adapter = dailyForecastAdapter
-        binding.weeklyForecastRecycler.addItemDecoration(DailyListDecoration())
+        binding.weeklyForecastRecycler.addItemDecoration(dailyListDecoration)
     }
 
     private fun onGrantedGeoPermissionResult(granted: Boolean) {

@@ -90,6 +90,7 @@ class HomeViewModel @Inject constructor(
     private fun loadForecast() {
         viewModelScope.launch {
             screenStateMutableFlow.emit(ScreenState.Loading)
+            forecastMutableStateFlow.emit(ForecastState.Loading)
             val locality = localityState.value
             val permissionState = permissionMutableStateFlow.value
 
@@ -136,6 +137,12 @@ class HomeViewModel @Inject constructor(
             loadForecast()
     }
 
+    fun sendRefreshAction(){
+        viewModelScope.launch {
+            refreshMutableFlow.emit(true)
+        }
+    }
+
     private fun getForecastByLocation(locality: LocalityState.City) {
         getForecastUseCase(
             lat = locality.locality.lat,
@@ -148,6 +155,7 @@ class HomeViewModel @Inject constructor(
                 is ApiError -> forecastMutableStateFlow.emit(ForecastState.Error(message = forecast.message))
                 is ApiException -> forecastMutableStateFlow.emit(ForecastState.Error(message = forecast.message))
             }
+            refreshMutableFlow.emit(false)
         }.launchIn(viewModelScope)
     }
 
@@ -237,7 +245,11 @@ class HomeViewModel @Inject constructor(
                 if (query == "")
                     searchQueryJob?.cancel()
             }.debounce(500)
-            .onEach { searchRequest.emit(it) }
+            .onEach {
+                if (it.isNotEmpty()){
+                    searchRequest.emit(it)
+                }
+            }
             .launchIn(viewModelScope)
 
         searchRequest

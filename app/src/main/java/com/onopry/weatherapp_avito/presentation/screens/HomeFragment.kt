@@ -146,13 +146,22 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             query?.let { viewModel.sendQuery(it) }
         }
 
+        binding.autoCompleteTv.setOnFocusChangeListener { _, isFocused ->
+            if (isFocused) binding.autoCompleteTv.hint = ""
+        }
+
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.localityState.collect { localityState ->
                     when (localityState) {
-                        is LocalityState.City -> binding.autoCompleteTv.setText("${localityState.locality.country}, ${localityState.locality.name}")
+                        is LocalityState.City -> {
+                            if (localityState.locality.name != null){
+                                binding.autoCompleteTv.hint = "${localityState.locality.country}, ${localityState.locality.name}"
+                            }
+                        }
 //                        is LocalityState.Pending -> binding.autoCompleteTv.setText("Loading your location...")
-                        is LocalityState.Error -> binding.autoCompleteTv.setText("Cannot identify name of your location")
+                        is LocalityState.Error -> binding.autoCompleteTv.hint = "Cannot identify name of your location"
+//                        is LocalityState.Error -> binding.autoCompleteTv.setText("Cannot identify name of your location")
                     }
                 }
             }
@@ -276,6 +285,8 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         binding.weeklyForecastRecycler.adapter = dailyForecastAdapter
         binding.weeklyForecastRecycler.addItemDecoration(dailyListDecoration)
     }
+
+    override di
 
     private fun onGrantedGeoPermissionResult(granted: Boolean) {
         if (granted) {

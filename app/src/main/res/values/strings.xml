@@ -8,4 +8,5 @@
     <string name="reload_after_error_button">Try again</string>
     <string name="loading_location_text">Your location is…</string>
     <string name="unexpected_error">Oops… Unexpected error occurred. Please try again</string>
+    <string name="location_search_input_action">Enter your city</string>
 </resources>

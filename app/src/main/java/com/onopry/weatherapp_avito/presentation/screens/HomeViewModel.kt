@@ -160,7 +160,7 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun getUserLocation(userLocality: LocalityState.City) {
-        if (isLocalityHasFullData(userLocality.locality)) {
+        if (!isLocalityHasFullData(userLocality.locality)) {
             getLocationNameUseCase(userLocality.locality.lat, userLocality.locality.lon)
                 .onEach { locality ->
                     when (locality) {

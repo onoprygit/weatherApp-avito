@@ -18,30 +18,48 @@
         android:layout_alignParentEnd="true"
         android:background="@color/accient_blue">
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/inputLayout"
+<!--        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+            android:id="@+id/autoCompleteTv"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_margin="10dp"
-            app:endIconCheckable="true"
-            app:endIconDrawable="@drawable/ic_search"
-            app:endIconMode="custom">
+            android:layout_height="45dp"
+            android:layout_gravity="center"
+            android:layout_marginEnd="@dimen/item_forecast_base_horizontal_offset"
+            android:layout_marginStart="@dimen/item_forecast_base_horizontal_offset"
+            android:background="@drawable/bg_searchview"
+            android:completionThreshold="1"
+            android:maxLength="20"
+            android:maxLines="1"
+            android:drawableEnd="@drawable/ic_search"
+            android:textColorHint="@color/black"
+            android:hint="@string/location_search_input_action"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            />-->
 
-            <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                android:id="@+id/autoCompleteTv"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="top"
-                android:background="@drawable/bg_searchview"
-                android:completionThreshold="1"
-                android:maxLength="20"
-                android:maxLines="1"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/inputLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_margin="10dp"
+                    app:endIconCheckable="true"
+                    app:endIconDrawable="@drawable/ic_search"
+                    app:endIconMode="custom">
 
-                android:paddingStart="20dp"
-                android:paddingEnd="20dp" />
-        </com.google.android.material.textfield.TextInputLayout>
+                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                        android:id="@+id/autoCompleteTv"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="top"
+                        android:background="@drawable/bg_searchview"
+                        android:completionThreshold="1"
+                        android:maxLength="20"
+                        android:maxLines="1"
+
+                        android:paddingStart="20dp"
+                        android:paddingEnd="20dp" />
+                </com.google.android.material.textfield.TextInputLayout>
     </com.google.android.material.appbar.MaterialToolbar>
 
     <include

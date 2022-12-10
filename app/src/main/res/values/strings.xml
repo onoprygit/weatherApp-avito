@@ -9,4 +9,14 @@
     <string name="loading_location_text">Your location is…</string>
     <string name="unexpected_error">Oops… Unexpected error occurred. Please try again</string>
     <string name="location_search_input_action">Enter your city</string>
+
+    <string name="wind_block_title">Wind</string>
+    <string name="feels_block_title">Feels(min/max)</string>
+    <string name="precipitation_block_title">Precipitation</string>
+    <string name="sun_block_title">Sunrise - sunset</string>
+    <string name="sun_time">%1$d:%2$d - %3$d:%4$d</string>
+
+    <string name="min_slash_max_values">%1$s/%2$s</string>
+
+
 </resources>

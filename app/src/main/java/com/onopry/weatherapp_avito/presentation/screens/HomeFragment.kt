@@ -11,15 +11,12 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts.RequestPermission
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.res.ResourcesCompat
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.location.LocationServices
 import com.onopry.data.utils.debugLog
 import com.onopry.domain.model.forecast.Locality
@@ -244,30 +241,31 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 .getDayOfWeekDayMonth(fullDay = true, fullMonth = false)
 
             currentWeatherMinMaxTempTv.text =
-                "${currentDayWeather.temperatureMin}/${currentDayWeather.temperatureMax}"
+                    requireContext().getString(R.string.min_slash_max_values, currentDayWeather.temperatureMin, currentDayWeather.temperatureMax)
             currentWeatherTempTv.text = currentWeather.temperature
 
             currentWeatherWind.infoImage.setImageResource(R.drawable.ic_wind_speed)
-            currentWeatherWind.infoNameTv.text = "Wind"
+            currentWeatherWind.infoNameTv.text = requireContext().getString(R.string.wind_block_title)
             currentWeatherWind.infoValueTv.text = currentWeather.windSpeed
 
             currentWeatherTempFeels.infoImage.setImageResource(R.drawable.ic_temp_feels_like)
-            currentWeatherTempFeels.infoNameTv.text = "Feels (min/max)"
+            currentWeatherTempFeels.infoNameTv.text = requireContext().getString(R.string.feels_block_title)
             currentWeatherTempFeels.infoValueTv.text =
-                "${currentDayWeather.apparentTemperatureMin}/${currentDayWeather.apparentTemperatureMax}"
+                requireContext().getString(R.string.min_slash_max_values, currentDayWeather.apparentTemperatureMin, currentDayWeather.apparentTemperatureMax)
 
 
             currentWeatherPrecipitation.infoImage.setImageResource(R.drawable.ic_precipitation)
-            currentWeatherPrecipitation.infoNameTv.text = "Precipitation"
-            currentWeatherPrecipitation.infoValueTv.text = "${currentDayWeather.precipitationSum}"
+            currentWeatherPrecipitation.infoNameTv.text = requireContext().getString(R.string.precipitation_block_title)
+            currentWeatherPrecipitation.infoValueTv.text = currentDayWeather.precipitationSum
 
             val sunrise = LocalDateTime.parse(currentDayWeather.sunrise)
             val sunset = LocalDateTime.parse(currentDayWeather.sunset)
 
             currentWeatherSun.infoImage.setImageResource(R.drawable.ic_sun)
-            currentWeatherSun.infoNameTv.text = "Sunrise - sunset"
+            currentWeatherSun.infoNameTv.text = requireContext().getString(R.string.sun_block_title)
             currentWeatherSun.infoValueTv.text =
-                "${sunrise.hour}:${sunrise.minute} - ${sunset.hour}:${sunset.minute}"
+                    requireContext().getString(R.string.sun_time, sunrise.hour, sunrise.minute, sunset.hour, sunset.minute)
+//                "${sunrise.hour}:${sunrise.minute} - ${sunset.hour}:${sunset.minute}"
 
             setupRecyclers(forecastState)
         }
@@ -286,7 +284,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         binding.weeklyForecastRecycler.addItemDecoration(dailyListDecoration)
     }
 
-    override di
 
     private fun onGrantedGeoPermissionResult(granted: Boolean) {
         if (granted) {

@@ -8,7 +8,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.view.View
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts.RequestPermission
 import androidx.appcompat.app.AlertDialog
 import androidx.core.widget.doOnTextChanged
@@ -18,6 +17,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.gms.location.LocationServices
+import com.google.android.material.snackbar.Snackbar
 import com.onopry.data.utils.debugLog
 import com.onopry.domain.model.forecast.Locality
 import com.onopry.domain.model.forecast.LocalitySearch
@@ -55,7 +55,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private val dailyListDecoration: DailyListDecoration by lazy { DailyListDecoration() }
     private val hourlyListDecoration: HourlyListDecoration by lazy { HourlyListDecoration() }
-
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -152,12 +151,14 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 viewModel.localityState.collect { localityState ->
                     when (localityState) {
                         is LocalityState.City -> {
-                            if (localityState.locality.name != null){
-                                binding.autoCompleteTv.hint = "${localityState.locality.country}, ${localityState.locality.name}"
+                            if (localityState.locality.name != null) {
+                                binding.autoCompleteTv.hint =
+                                    "${localityState.locality.country}, ${localityState.locality.name}"
                             }
                         }
 //                        is LocalityState.Pending -> binding.autoCompleteTv.setText("Loading your location...")
-                        is LocalityState.Error -> binding.autoCompleteTv.hint = "Cannot identify name of your location"
+                        is LocalityState.Error -> binding.autoCompleteTv.hint =
+                            "Cannot identify name of your location"
 //                        is LocalityState.Error -> binding.autoCompleteTv.setText("Cannot identify name of your location")
                     }
                 }
@@ -241,21 +242,32 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 .getDayOfWeekDayMonth(fullDay = true, fullMonth = false)
 
             currentWeatherMinMaxTempTv.text =
-                    requireContext().getString(R.string.min_slash_max_values, currentDayWeather.temperatureMin, currentDayWeather.temperatureMax)
+                requireContext().getString(
+                    R.string.min_slash_max_values,
+                    currentDayWeather.temperatureMin,
+                    currentDayWeather.temperatureMax
+                )
             currentWeatherTempTv.text = currentWeather.temperature
 
             currentWeatherWind.infoImage.setImageResource(R.drawable.ic_wind_speed)
-            currentWeatherWind.infoNameTv.text = requireContext().getString(R.string.wind_block_title)
+            currentWeatherWind.infoNameTv.text =
+                requireContext().getString(R.string.wind_block_title)
             currentWeatherWind.infoValueTv.text = currentWeather.windSpeed
 
             currentWeatherTempFeels.infoImage.setImageResource(R.drawable.ic_temp_feels_like)
-            currentWeatherTempFeels.infoNameTv.text = requireContext().getString(R.string.feels_block_title)
+            currentWeatherTempFeels.infoNameTv.text =
+                requireContext().getString(R.string.feels_block_title)
             currentWeatherTempFeels.infoValueTv.text =
-                requireContext().getString(R.string.min_slash_max_values, currentDayWeather.apparentTemperatureMin, currentDayWeather.apparentTemperatureMax)
+                requireContext().getString(
+                    R.string.min_slash_max_values,
+                    currentDayWeather.apparentTemperatureMin,
+                    currentDayWeather.apparentTemperatureMax
+                )
 
 
             currentWeatherPrecipitation.infoImage.setImageResource(R.drawable.ic_precipitation)
-            currentWeatherPrecipitation.infoNameTv.text = requireContext().getString(R.string.precipitation_block_title)
+            currentWeatherPrecipitation.infoNameTv.text =
+                requireContext().getString(R.string.precipitation_block_title)
             currentWeatherPrecipitation.infoValueTv.text = currentDayWeather.precipitationSum
 
             val sunrise = LocalDateTime.parse(currentDayWeather.sunrise)
@@ -264,8 +276,13 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             currentWeatherSun.infoImage.setImageResource(R.drawable.ic_sun)
             currentWeatherSun.infoNameTv.text = requireContext().getString(R.string.sun_block_title)
             currentWeatherSun.infoValueTv.text =
-                    requireContext().getString(R.string.sun_time, sunrise.hour, sunrise.minute, sunset.hour, sunset.minute)
-//                "${sunrise.hour}:${sunrise.minute} - ${sunset.hour}:${sunset.minute}"
+                requireContext().getString(
+                    R.string.sun_time,
+                    sunrise.hour,
+                    sunrise.minute,
+                    sunset.hour,
+                    sunset.minute
+                )
 
             setupRecyclers(forecastState)
         }
@@ -288,7 +305,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private fun onGrantedGeoPermissionResult(granted: Boolean) {
         if (granted) {
             debugLog("Permission is granted")
-            shortToast("Разрешенгие получено")
+            shortToast(R.string.permission_granted_message)
             onLocationPermissionGranted()
         } else {
             debugLog("Permission is not granted")
@@ -330,11 +347,8 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         )
 
         if (requireContext().packageManager.resolveActivity(
-                appSettingIntent, PackageManager.MATCH_DEFAULT_ONLY
-            ) == null
-        ) {
-            Toast.makeText(requireContext(), "Permission are denied forever", Toast.LENGTH_SHORT)
-                .show()
+                appSettingIntent, PackageManager.MATCH_DEFAULT_ONLY) == null) {
+            Snackbar.make(binding.root, getString(R.string.permission_denied_forever_message), Snackbar.LENGTH_SHORT).show()
         } else {
             viewModel.sendPermissionState(PermissionState.Denied)
             showPermissionDeniedDialog(appSettingIntent)
@@ -342,22 +356,19 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     private fun showPermissionDeniedDialog(appSettingIntent: Intent) {
-        AlertDialog.Builder(requireContext())
-            .setTitle("Разрешение отклонено")
-            .setMessage(
-                """
-                        Вы отколнили разрешение навсегда.
-                        Оно требуется для более точного прогноза. Вы всегда можете перейти в настройки и разрешить доступ к геолокации.                      
-                        Перейти в настройки?
-                    """.trimIndent()
-            )
-            .setPositiveButton("Да") { _, _ ->
+
+        val alertDialog = AlertDialog.Builder(requireContext())
+            .setTitle(getString(R.string.geo_denied_alert_title))
+            .setMessage(getString(R.string.geo_denied_alert_content).trimIndent())
+            .setPositiveButton(getString(R.string.geo_denied_alert_negative_btn)) { _, _ ->
                 startActivity(appSettingIntent)
             }
-            .setNegativeButton("Нет") { _, _ ->
-
-            }
             .create()
-            .show()
+
+        alertDialog.setButton(
+            AlertDialog.BUTTON_NEGATIVE,
+            getString(R.string.geo_denied_alert_negative_btn)
+        ) { _, _ -> alertDialog.dismiss() }
+
     }
 }

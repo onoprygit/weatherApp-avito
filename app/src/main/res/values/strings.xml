@@ -18,5 +18,15 @@
 
     <string name="min_slash_max_values">%1$s/%2$s</string>
 
+    <string name="geo_denied_alert_title">Разрешение отклонено</string>
+    <string name="geo_denied_alert_content">Вы отколнили разрешение навсегда.
+                        Оно требуется для более точного прогноза. Вы всегда можете перейти в настройки и разрешить доступ к геолокации.
+                        Перейти в настройки?</string>
+    <string name="geo_denied_alert_positive_btn">Да</string>
+    <string name="geo_denied_alert_negative_btn">Нет</string>
+    <string name="permission_denied_forever_message">Permission are denied forever</string>
+    <string name="permission_denied_message">Permission is not granted</string>
+    <string name="permission_granted_message">Разрешение получено</string>
+
 
 </resources>

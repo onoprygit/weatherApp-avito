@@ -4,6 +4,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
 import com.onopry.domain.model.forecast.Daily
 import com.onopry.weatherapp_avito.R
@@ -29,6 +30,10 @@ fun OkHttpClient.Builder.addQueryParam(
 
 fun Fragment.shortToast(message: String) {
     Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+}
+
+fun Fragment.shortToast(@StringRes message: Int) {
+    Toast.makeText(context, getString(message), Toast.LENGTH_SHORT).show()
 }
 
 fun Fragment.longToast(message: String) {
